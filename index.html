@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>План обучения фронтенду - 8 месяцев</title>
+  <style>
+    :root {
+      --bg-primary: #1a1f2e;
+      --bg-secondary: #242938;
+      --bg-tertiary: #2d3447;
+      --bg-card: #353b4e;
+      --text-primary: #e8eaed;
+      --text-secondary: #b8bcc4;
+      --text-muted: #8b92a1;
+      --border-color: rgba(99, 179, 237, 0.2);
+      --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      --shadow-color: rgba(0, 0, 0, 0.4);
+      --glow: rgba(59, 130, 246, 0.3);
+      --accent-color: #3b82f6;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #f8f9fc;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f1f3f9;
+        --bg-card: #e8ebf3;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-muted: #64748b;
+        --border-color: rgba(59, 130, 246, 0.15);
+        --shadow-color: rgba(0, 0, 0, 0.06);
+        --glow: rgba(59, 130, 246, 0.2);
+        --accent-color: #3b82f6;
+      }
+    }
+
+    body[data-theme="dark"] {
+      --bg-primary: #1a1f2e;
+      --bg-secondary: #242938;
+      --bg-tertiary: #2d3447;
+      --bg-card: #353b4e;
+      --text-primary: #e8eaed;
+      --text-secondary: #b8bcc4;
+      --text-muted: #8b92a1;
+      --border-color: rgba(99, 179, 237, 0.2);
+      --shadow-color: rgba(0, 0, 0, 0.4);
+      --glow: rgba(59, 130, 246, 0.3);
+      --accent-color: #3b82f6;
+    }
+
+    body[data-theme="light"] {
+      --bg-primary: #f8f9fc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f3f9;
+      --bg-card: #e8ebf3;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border-color: rgba(59, 130, 246, 0.15);
+      --shadow-color: rgba(0, 0, 0, 0.06);
+      --glow: rgba(59, 130, 246, 0.2);
+      --accent-color: #3b82f6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      min-height: 100vh;
+      padding: 20px;
+      transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--bg-secondary);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px var(--shadow-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .header {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 3em;
+      margin-bottom: 16px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 20px;
+      z-index: 10;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05) rotate(15deg);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      padding: 32px;
+      background: var(--bg-primary);
+    }
+
+    .stat {
+      background: var(--bg-tertiary);
+      padding: 32px;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px var(--glow);
+    }
+
+    .stat h3 {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    .stat .num {
+      font-size: 48px;
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 48px;
+      background: var(--bg-tertiary);
+      margin: 32px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      position: relative;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      transition: width 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .controls {
+      padding: 24px 32px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    input {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 15px;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 4px var(--glow);
+      transform: translateY(-2px);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    button {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-filter {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-filter:hover {
+      background: var(--bg-tertiary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px var(--shadow-color);
+    }
+
+    .btn-filter.active {
+      background: var(--gradient-primary);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 24px var(--glow);
+    }
+
+    .btn-reset {
+      background: var(--gradient-accent);
+      color: white;
+    }
+
+    .btn-reset:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(245, 87, 108, 0.4);
+    }
+
+    .content {
+      padding: 32px;
+      background: var(--bg-primary);
+    }
+
+    .month {
+      margin-bottom: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+      transition: all 0.3s;
+    }
+
+    .month:hover {
+      box-shadow: 0 12px 40px var(--shadow-color);
+    }
+
+    .month-header {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 32px 36px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .month-header:hover {
+      filter: brightness(1.1);
+    }
+
+    .month-title {
+      font-size: 1.8em;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .week {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .week:last-child {
+      border-bottom: none;
+    }
+
+    .week-header {
+      background: var(--bg-tertiary);
+      padding: 20px 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      transition: all 0.3s;
+      border-left: 4px solid transparent;
+    }
+
+    .week-header:hover {
+      background: var(--bg-card);
+      border-left-color: #8b5cf6;
+      padding-left: 32px;
+    }
+
+    .week-desc {
+      background: var(--bg-secondary);
+      padding: 18px 28px 6px 28px;
+      font-size: 0.9em;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      border-left: 4px solid var(--accent-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .days {
+      padding: 24px;
+      background: var(--bg-secondary);
+    }
+
+    .day {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .day:hover {
+      transform: translateX(6px);
+      box-shadow: 0 12px 24px var(--glow);
+    }
+
+    .day.done {
+      background: rgba(34, 197, 94, 0.08);
+      border-left-color: #22c55e;
+    }
+
+    .day-header {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .day-header input {
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      margin-top: 2px;
+      accent-color: #8b5cf6;
+      border-radius: 6px;
+    }
+
+    .day-info {
+      flex: 1;
+    }
+
+    .day-title {
+      font-weight: 800;
+      font-size: 1.15em;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .day-time {
+      display: inline-block;
+      background: var(--gradient-primary);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-left: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .day-task {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin: 14px 0;
+      font-size: 0.98em;
+    }
+
+    .day-resources {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .day-resources a {
+      display: inline-block;
+      color: #a78bfa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 16px;
+      background: rgba(139, 92, 246, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .day-resources a:hover {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px var(--glow);
+    }
+
+    .collapsed {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .month-title {
+        font-size: 1.4em;
+      }
+
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .header {
+        padding: 40px 24px;
+      }
+    }
+  </style>
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">🌓</button>
+      <h1>План обучения фронтенду на 8 месяцев</h1>
+      <p>196 дней систематического изучения веб-разработки</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <h3>Всего дней</h3>
+        <div class="num">196</div>
+      </div>
+      <div class="stat">
+        <h3>Завершено</h3>
+        <div class="num" id="done">0</div>
+      </div>
+      <div class="stat">
+        <h3>Осталось</h3>
+        <div class="num" id="left">196</div>
+      </div>
+      <div class="stat">
+        <h3>Прогресс</h3>
+        <div class="num" id="pct">0%</div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="bar" style="width: 0%">0%</div>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Поиск по заданиям...">
+      <button class="btn-filter active" onclick="filter('all')">Все</button>
+      <button class="btn-filter" onclick="filter('done')">Завершено</button>
+      <button class="btn-filter" onclick="filter('todo')">К изучению</button>
+      <button class="btn-reset" onclick="reset()">Сбросить прогресс</button>
+    </div>
+
+    <div class="content" id="content"></div>
+  </div>
+
+  <script>
+    // Инициализация состояния из localStorage или пустой объект
+    let state = {};
+    if (localStorage.getItem('frontendPlan')) {
+      try {
+        state = JSON.parse(localStorage.getItem('frontendPlan')) || {};
+      } catch (e) {
+        state = {};
+      }
+    }
+
+    const plan = [
+      // Месяц 1
+      {
+        month: 1, title: "Месяц 1. Основы веб-разработки", weeks: [
+          {
+            week: 1, title: "Неделя 1 — Интернет, HTTP, DNS", days: [
+              { day: 1, title: "Как работает интернет", time: "2 ч", task: "Принципы работы сети, клиент ↔ сервер, создайте конспект.", links: ["MDN — Internet||https://developer.mozilla.org/ru/docs/Learn/Common_questions/Web_mechanics/How_does_the_Internet_work"] },
+              { day: 2, title: "HTTP основы", time: "2 ч", task: "Методы, коды статуса, заголовки. Разбор вкладки Network.", links: ["MDN — HTTP overview||https://developer.mozilla.org/ru/docs/Web/HTTP/Overview"] },
+              { day: 3, title: "DNS и домены", time: "2 ч", task: "Что такое DNS, доменное имя, поиск IP через nslookup/dig.", links: ["MDN — DNS||https://developer.mozilla.org/ru/docs/Glossary/DNS"] },
+              { day: 4, title: "Хостинг и публикация", time: "2 ч", task: "Публикация HTML страницы на GitHub Pages.", links: ["GitHub Pages||https://pages.github.com/"] },
+              { day: 5, title: "Как работает браузер", time: "2 ч", task: "Разбор рендера: парсинг, DOM, CSSOM, DevTools панели.", links: ["How browsers work||https://web.dev/articles/howbrowserswork"] },
+              { day: 6, title: "Проект: Личная страница", time: "4-5 ч", task: "Статическая страница обо мне + публикация.", links: ["MDN HTML||https://developer.mozilla.org/ru/docs/Learn/HTML"] },
+              { day: 7, title: "Git и терминал", time: "4-5 ч", task: "git init/add/commit/push, структура репозитория.", links: ["Git Guide||https://rogerdudler.github.io/git-guide/index.ru.html"] }
+            ]
+          },
+          {
+            week: 2, title: "Неделя 2 — Базовый HTML/CSS", days: [
+              { day: 8, title: "Семантика HTML", time: "2 ч", task: "Заголовки, списки, ссылки, структура.", links: ["MDN Structuring HTML||https://developer.mozilla.org/ru/docs/Learn/HTML"] },
+              { day: 9, title: "Формы", time: "2 ч", task: "input/select/textarea/label, базовая валидация атрибутами.", links: ["MDN Forms||https://developer.mozilla.org/ru/docs/Learn/Forms"] },
+              { day: 10, title: "Основы CSS", time: "2 ч", task: "Селекторы, каскад, наследование, специфика.", links: ["What is CSS||https://developer.mozilla.org/ru/docs/Learn/CSS"] },
+              { day: 11, title: "Box Model и Flex", time: "2 ч", task: "display, box-sizing, flex-контейнер.", links: ["Flexbox Guide||https://css-tricks.com/snippets/css/a-guide-to-flexbox/"] },
+              { day: 12, title: "Адаптивность", time: "2 ч", task: "@media, относительные единицы, mobile-first.", links: ["Responsive MDN||https://developer.mozilla.org/ru/docs/Learn/CSS/CSS_layout/Responsive_Design"] },
+              { day: 13, title: "Проект: Резюме", time: "4-5 ч", task: "Одностраничное CV c адаптивностью.", links: [] },
+              { day: 14, title: "Шлифовка резюме", time: "4-5 ч", task: "Якоря, плавный скролл, улучшение типографики.", links: [] }
+            ]
+          },
+          {
+            week: 3, title: "Неделя 3 — Продвинутый CSS", days: [
+              { day: 15, title: "Flexbox углубление", time: "2 ч", task: "Выравнивание, вложенные flex-структуры.", links: [] },
+              { day: 16, title: "CSS Grid", time: "2 ч", task: "grid-template, fr, auto-fit.", links: ["Grid Guide||https://css-tricks.com/snippets/css/complete-guide-grid/"] },
+              { day: 17, title: "Псевдоклассы/элементы", time: "2 ч", task: ":hover/:focus/::before/::after эффекты.", links: [] },
+              { day: 18, title: "Sass/SCSS", time: "2 ч", task: "Переменные, вложенность, partials.", links: ["Sass Guide||https://sass-lang.com/guide"] },
+              { day: 19, title: "Валидация форм", time: "2 ч", task: ":invalid, required, стили ошибок.", links: [] },
+              { day: 20, title: "Проект: Лендинг", time: "4-5 ч", task: "Лендинг с формой и сетками.", links: [] },
+              { day: 21, title: "Оптимизация CSS", time: "4-5 ч", task: "Структура SCSS, переменные, рефакторинг.", links: [] }
+            ]
+          },
+          {
+            week: 4, title: "Неделя 4 — Git, инструменты, среда", days: [
+              { day: 22, title: "Git ветки", time: "2 ч", task: "branch/merge, fast-forward.", links: [] },
+              { day: 23, title: "Pull Requests", time: "2 ч", task: "Fork/PR/review в GitHub.", links: [] },
+              { day: 24, title: "CLI основы", time: "2 ч", task: "Навигация, создание файлов, права.", links: [] },
+              { day: 25, title: "Node & npm", time: "2 ч", task: "package.json, scripts, semver.", links: ["Node.js||https://nodejs.org/ru/"] },
+              { day: 26, title: "npm проект", time: "2 ч", task: "devDeps vs deps, обновления.", links: [] },
+              { day: 27, title: "VS Code + ESLint + Prettier", time: "4-5 ч", task: "Настройка форматирования и линтинга.", links: ["Prettier||https://prettier.io/"] },
+              { day: 28, title: "Проект: Workflow", time: "4-5 ч", task: "Рабочий процесс с ветками и PR.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 2
+      {
+        month: 2, title: "Месяц 2. Основы JavaScript", weeks: [
+          {
+            week: 5, title: "Неделя 5 — Введение в JS", days: [
+              { day: 29, title: "Что такое JavaScript", time: "2 ч", task: "Роль JS в браузере, первые выражения.", links: ["MDN JS First Steps||https://developer.mozilla.org/ru/docs/Learn/JavaScript/First_steps"] },
+              { day: 30, title: "Переменные и типы", time: "2 ч", task: "let/const, примитивы, typeof.", links: [] },
+              { day: 31, title: "Условия и циклы", time: "2 ч", task: "if/switch/for/while игра 'Угадай число'.", links: [] },
+              { day: 32, title: "Функции", time: "2 ч", task: "Параметры, возврат, стрелочные функции.", links: [] },
+              { day: 33, title: "Строки и массивы", time: "2 ч", task: "Методы map/filter, практика.", links: [] },
+              { day: 34, title: "Проект: To-Do (ч1)", time: "4-5 ч", task: "Добавление/удаление задач, массив в памяти.", links: [] },
+              { day: 35, title: "Рефакторинг To-Do", time: "4-5 ч", task: "Модули (логика в функциях), хранение в localStorage.", links: [] }
+            ]
+          },
+          {
+            week: 6, title: "Неделя 6 — Объекты и DOM", days: [
+              { day: 36, title: "Объекты/JSON", time: "2 ч", task: "Создание, доступ, сериализация JSON.", links: [] },
+              { day: 37, title: "Массивы объектов", time: "2 ч", task: "filter/find/sort практические примеры.", links: [] },
+              { day: 38, title: "DOM Введение", time: "2 ч", task: "querySelector/createElement.", links: [] },
+              { day: 39, title: "События", time: "2 ч", task: "addEventListener, предотвращение перезагрузки.", links: [] },
+              { day: 40, title: "Манипуляция классами", time: "2 ч", task: "classList.toggle для теминга.", links: [] },
+              { day: 41, title: "Расширение To-Do", time: "4-5 ч", task: "Фильтр: все/активные/выполненные.", links: [] },
+              { day: 42, title: "Отладка", time: "4-5 ч", task: "Breakpoint, Sources, stack trace.", links: [] }
+            ]
+          },
+          {
+            week: 7, title: "Неделя 7 — Асинхронность", days: [
+              { day: 43, title: "Таймеры", time: "2 ч", task: "setTimeout/setInterval счетчик.", links: [] },
+              { day: 44, title: "Promises", time: "2 ч", task: "Создание/цепочки then/catch.", links: [] },
+              { day: 45, title: "Fetch API", time: "2 ч", task: "GET запрос к публичному API.", links: ["JSONPlaceholder||https://jsonplaceholder.typicode.com/"] },
+              { day: 46, title: "async/await", time: "2 ч", task: "Переписать код на async/await.", links: [] },
+              { day: 47, title: "Обработка ошибок", time: "2 ч", task: "try/catch/finally, пользовательские ошибки.", links: [] },
+              { day: 48, title: "Проект: Мини SPA", time: "4-5 ч", task: "Список пользователей + детали + поиск.", links: [] },
+              { day: 49, title: "Улучшение SPA", time: "4-5 ч", task: "Лоадер, сортировка, обработка ошибок.", links: [] }
+            ]
+          },
+          {
+            week: 8, title: "Неделя 8 — Node.js и сборка", days: [
+              { day: 50, title: "Node.js основы", time: "2 ч", task: "Запуск скрипта, process.env.", links: [] },
+              { day: 51, title: "CommonJS модули", time: "2 ч", task: "module.exports / require.", links: [] },
+              { day: 52, title: "npm пакеты", time: "2 ч", task: "Установка lodash, импорт и использование.", links: [] },
+              { day: 53, title: "ES модули", time: "2 ч", task: "import/export и Babel.", links: [] },
+              { day: 54, title: "Webpack & Babel", time: "2 ч", task: "entry/output/loader/plugin.", links: [] },
+              { day: 55, title: "Проект: SPA + сборка", time: "4-5 ч", task: "Перенос SPA в структуру с билдом.", links: [] },
+              { day: 56, title: "ESLint/Prettier", time: "4-5 ч", task: "Настройка правил, фиксы.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 3
+      {
+        month: 3, title: "Месяц 3. React и современный фронтенд", weeks: [
+          {
+            week: 9, title: "Неделя 9 — Основы React", days: [
+              { day: 57, title: "Quick Start", time: "2 ч", task: "Создание проекта (Vite) + первый компонент.", links: ["React Quick Start||https://react.dev/learn"] },
+              { day: 58, title: "JSX", time: "2 ч", task: "Разметка в JS, выражения в JSX.", links: [] },
+              { day: 59, title: "useState", time: "2 ч", task: "Счетчик, несколько состояний.", links: [] },
+              { day: 60, title: "Рендер списков", time: "2 ч", task: "key и производительность.", links: [] },
+              { day: 61, title: "Условный рендер", time: "2 ч", task: "Тернарные операторы, &&.", links: [] },
+              { day: 62, title: "Проект: To-Do React", time: "4-5 ч", task: "Перенос To-Do на компоненты.", links: [] },
+              { day: 63, title: "Стилизация", time: "4-5 ч", task: "CSS Modules / styled-components.", links: [] }
+            ]
+          },
+          {
+            week: 10, title: "Неделя 10 — Данные и маршруты", days: [
+              { day: 64, title: "useEffect", time: "2 ч", task: "Загрузка данных при монтировании.", links: [] },
+              { day: 65, title: "React Router", time: "2 ч", task: "Маршруты и Link.", links: [] },
+              { day: 66, title: "Формы", time: "2 ч", task: "Контролируемые компоненты.", links: [] },
+              { day: 67, title: "Context API", time: "2 ч", task: "Глобальные данные без проп-дрилинга.", links: [] },
+              { day: 68, title: "useReducer", time: "2 ч", task: "Рефактор состояния To-Do.", links: [] },
+              { day: 69, title: "Проект: Заметки", time: "4-5 ч", task: "Приложение заметок с роутингом.", links: [] },
+              { day: 70, title: "Оптимизация заметок", time: "4-5 ч", task: "Поиск/сортировка/локальное хранение.", links: [] }
+            ]
+          },
+          {
+            week: 11, title: "Неделя 11 — Продвинутый React", days: [
+              { day: 71, title: "Кастомные хуки", time: "2 ч", task: "Вынос повторной логики.", links: [] },
+              { day: 72, title: "Порталы", time: "2 ч", task: "Модальное окно вне DOM-иерархии.", links: [] },
+              { day: 73, title: "Оптимизация", time: "2 ч", task: "useMemo/useCallback/React.memo.", links: [] },
+              { day: 74, title: "Анимации", time: "2 ч", task: "Framer Motion базовые переходы.", links: [] },
+              { day: 75, title: "Error Boundaries", time: "2 ч", task: "Компонент ловли ошибок.", links: [] },
+              { day: 76, title: "Проект: Улучшение заметок", time: "4-5 ч", task: "Модалки + анимации + обработка ошибок.", links: [] },
+              { day: 77, title: "Тесты компонентов", time: "4-5 ч", task: "React Testing Library первые тесты.", links: [] }
+            ]
+          },
+          {
+            week: 12, title: "Неделя 12 — CSS фреймворки", days: [
+              { day: 78, title: "Bootstrap", time: "2 ч", task: "Сетка/карточки/кнопки.", links: ["Bootstrap||https://getbootstrap.com/"] },
+              { day: 79, title: "Tailwind ввод", time: "2 ч", task: "Утилитарные классы и конфигурация.", links: ["Tailwind||https://tailwindcss.com/"] },
+              { day: 80, title: "Адаптивность Tailwind", time: "2 ч", task: "breakpoints и состояния.", links: [] },
+              { day: 81, title: "Кастомизация Tailwind", time: "2 ч", task: "Настройка theme.", links: [] },
+              { day: 82, title: "Сравнение подходов", time: "2 ч", task: "Переписать секцию: Bootstrap vs Tailwind.", links: [] },
+              { day: 83, title: "Проект: Магазин (ч1)", time: "4-5 ч", task: "Карточки товаров + сетка.", links: [] },
+              { day: 84, title: "Магазин улучшения", time: "4-5 ч", task: "Фильтры, корзина UI.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 4
+      {
+        month: 4, title: "Месяц 4. TypeScript, GraphQL, Next.js, Auth", weeks: [
+          {
+            week: 13, title: "Неделя 13 — TypeScript", days: [
+              { day: 85, title: "Введение TS", time: "2 ч", task: "tsc init, компиляция hello.ts.", links: ["TypeScript||https://www.typescriptlang.org/"] },
+              { day: 86, title: "Базовые типы", time: "2 ч", task: "string/number/boolean/array/tuple.", links: [] },
+              { day: 87, title: "Интерфейсы", time: "2 ч", task: "interface vs type, расширение.", links: [] },
+              { day: 88, title: "Generics", time: "2 ч", task: "Generic функции и интерфейсы.", links: [] },
+              { day: 89, title: "TS + React", time: "2 ч", task: "Типизация Props/State.", links: [] },
+              { day: 90, title: "Рефакторинг проектов", time: "4-5 ч", task: "Перенос To-Do на TS (strict).", links: [] },
+              { day: 91, title: "Продвинутые типы", time: "4-5 ч", task: "Union/Intersection/utility types.", links: [] }
+            ]
+          },
+          {
+            week: 14, title: "Неделя 14 — GraphQL", days: [
+              { day: 92, title: "Что такое GraphQL", time: "2 ч", task: "Запросы vs REST.", links: ["GraphQL Intro||https://graphql.org/learn/"] },
+              { day: 93, title: "Схема и типы", time: "2 ч", task: "type Query/Mutation.", links: [] },
+              { day: 94, title: "Запросы/мутации", time: "2 ч", task: "playground, variables.", links: [] },
+              { day: 95, title: "Эволюция API", time: "2 ч", task: "Добавление поля + @deprecated.", links: [] },
+              { day: 96, title: "GraphQL в React", time: "2 ч", task: "Apollo Client setup.", links: [] },
+              { day: 97, title: "Проект: API + клиент", time: "4-5 ч", task: "Список книг (CRUD).", links: [] },
+              { day: 98, title: "Улучшения проекта", time: "4-5 ч", task: "Пагинация/загрузка/ошибки.", links: [] }
+            ]
+          },
+          {
+            week: 15, title: "Неделя 15 — Next.js", days: [
+              { day: 99, title: "Введение Next.js", time: "2 ч", task: "Структура, pages.", links: ["Next.js||https://nextjs.org/docs"] },
+              { day: 100, title: "Маршрутизация", time: "2 ч", task: "Навигация + layout.", links: [] },
+              { day: 101, title: "SSR и SSG", time: "2 ч", task: "getServerSideProps/getStaticProps.", links: [] },
+              { day: 102, title: "Динамические маршруты", time: "2 ч", task: "[id] и getStaticPaths.", links: [] },
+              { day: 103, title: "Image и стили", time: "2 ч", task: "next/image + CSS Modules.", links: [] },
+              { day: 104, title: "Проект: Блог (ч1)", time: "4-5 ч", task: "Markdown статьи + динамические страницы.", links: [] },
+              { day: 105, title: "Блог улучшения", time: "4-5 ч", task: "SEO + деплой Vercel.", links: [] }
+            ]
+          },
+          {
+            week: 16, title: "Неделя 16 — Аутентификация и безопасность", days: [
+              { day: 106, title: "Основы Auth", time: "2 ч", task: "JWT vs Cookies vs OAuth.", links: [] },
+              { day: 107, title: "NextAuth", time: "2 ч", task: "Провайдер GitHub вход.", links: [] },
+              { day: 108, title: "XSS/CSRF", time: "2 ч", task: "Примеры атак и защита.", links: [] },
+              { day: 109, title: "Защита маршрутов", time: "2 ч", task: "Middleware auth.", links: [] },
+              { day: 110, title: "UI библиотеки", time: "2 ч", task: "Material UI настройка темы.", links: [] },
+              { day: 111, title: "CMS интеграция", time: "4-5 ч", task: "Headless CMS контент.", links: [] },
+              { day: 112, title: "Аудит безопасности", time: "4-5 ч", task: "Проверка заголовков, CSP.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 5
+      {
+        month: 5, title: "Месяц 5. Тестирование и качество", weeks: [
+          {
+            week: 17, title: "Неделя 17 — Юнит-тесты", days: [
+              { day: 113, title: "Jest ввод", time: "2 ч", task: "Установка + первый тест.", links: ["Jest||https://jestjs.io/"] },
+              { day: 114, title: "Matchers", time: "2 ч", task: "toBe/toEqual/toContain.", links: [] },
+              { day: 115, title: "Mocks & Timers", time: "2 ч", task: "jest.fn()/fake timers.", links: [] },
+              { day: 116, title: "Snapshot", time: "2 ч", task: "Снапшот компонента.", links: [] },
+              { day: 117, title: "RTL", time: "2 ч", task: "Render + screen.getBy*.", links: [] },
+              { day: 118, title: "Проект: Тесты заметок", time: "4-5 ч", task: "CRUD тесты.", links: [] },
+              { day: 119, title: "Coverage", time: "4-5 ч", task: "Отчет покрытия + улучшения.", links: [] }
+            ]
+          },
+          {
+            week: 18, title: "Неделя 18 — Cypress (E2E)", days: [
+              { day: 120, title: "Cypress ввод", time: "2 ч", task: "init и первый spec.", links: [] },
+              { day: 121, title: "Поиск элементов", time: "2 ч", task: "cy.get/contains.", links: [] },
+              { day: 122, title: "Взаимодействия", time: "2 ч", task: "click/type/check.", links: [] },
+              { day: 123, title: "Сеть и intercept", time: "2 ч", task: "Мокирование ответа.", links: [] },
+              { day: 124, title: "Стратегии", time: "2 ч", task: "Организация тестов.", links: [] },
+              { day: 125, title: "Проект: E2E блог", time: "4-5 ч", task: "Навигация + форма создания.", links: [] },
+              { day: 126, title: "CI для Cypress", time: "4-5 ч", task: "GitHub Actions workflow.", links: [] }
+            ]
+          },
+          {
+            week: 19, title: "Неделя 19 — Производительность и a11y", days: [
+              { day: 127, title: "Метрики", time: "2 ч", task: "FCP/LCP/CLS измерение Lighthouse.", links: [] },
+              { day: 128, title: "Оптимизация загрузки", time: "2 ч", task: "Code splitting, lazy.", links: [] },
+              { day: 129, title: "Accessibility основы", time: "2 ч", task: "ARIA, контраст.", links: [] },
+              { day: 130, title: "Практика a11y", time: "2 ч", task: "Фокус, alt, aria-label.", links: [] },
+              { day: 131, title: "PWA основы", time: "2 ч", task: "Service Worker, manifest.", links: [] },
+              { day: 132, title: "Проект: PWA", time: "4-5 ч", task: "Добавить offline кеш статических ресурсов.", links: [] },
+              { day: 133, title: "Оптимизация отчета", time: "4-5 ч", task: "Повторный прогон Lighthouse.", links: [] }
+            ]
+          },
+          {
+            week: 20, title: "Неделя 20 — Mobile/Desktop", days: [
+              { day: 134, title: "React Native ввод", time: "2 ч", task: "Создание проекта Expo.", links: [] },
+              { day: 135, title: "RN компоненты", time: "2 ч", task: "View/Text/Button/state.", links: [] },
+              { day: 136, title: "RN навигация", time: "2 ч", task: "react-navigation stack.", links: [] },
+              { day: 137, title: "Electron основы", time: "2 ч", task: "Первое окно, main/renderer.", links: [] },
+              { day: 138, title: "API во фронте", time: "2 ч", task: "fetch/axios общие паттерны.", links: [] },
+              { day: 139, title: "Проект: RN To-Do", time: "4-5 ч", task: "AsyncStorage список задач.", links: [] },
+              { day: 140, title: "Проект: Electron заметки", time: "4-5 ч", task: "Файловое хранение заметок.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 6
+      {
+        month: 6, title: "Месяц 6. Визуализация, генераторы, CI/CD", weeks: [
+          {
+            week: 21, title: "Неделя 21 — Визуализация и анимации", days: [
+              { day: 141, title: "Chart.js/D3 ввод", time: "2 ч", task: "Простой бар-чарт.", links: [] },
+              { day: 142, title: "CSS анимации", time: "2 ч", task: "transition/animation keyframes.", links: [] },
+              { day: 143, title: "Framer Motion", time: "2 ч", task: "AnimatePresence.", links: [] },
+              { day: 144, title: "Интерактивная диаграмма", time: "2 ч", task: "Hover tooltip.", links: [] },
+              { day: 145, title: "Чарт в React", time: "2 ч", task: "Компонент Chart пропсы.", links: [] },
+              { day: 146, title: "Проект: Навыки визуализация", time: "4-5 ч", task: "Диаграмма навыков + анимация.", links: [] },
+              { day: 147, title: "Доступность графики", time: "4-5 ч", task: "ARIA описание диаграмм.", links: [] }
+            ]
+          },
+          {
+            week: 22, title: "Неделя 22 — SSG и CMS", days: [
+              { day: 148, title: "SSG концепция", time: "2 ч", task: "Gatsby/Astro обзор.", links: [] },
+              { day: 149, title: "Gatsby старт", time: "2 ч", task: "Структура и запуск.", links: [] },
+              { day: 150, title: "Страницы + GraphQL", time: "2 ч", task: "Markdown источники.", links: [] },
+              { day: 151, title: "Плагины", time: "2 ч", task: "gatsby-plugin-image/SEO.", links: [] },
+              { day: 152, title: "Headless CMS", time: "2 ч", task: "Подключение Strapi/Contentful.", links: [] },
+              { day: 153, title: "Проект: Блог на Gatsby", time: "4-5 ч", task: "Сборка и оптимизация.", links: [] },
+              { day: 154, title: "Деплой SSG", time: "4-5 ч", task: "Netlify/Vercel автодеплой.", links: [] }
+            ]
+          },
+          {
+            week: 23, title: "Неделя 23 — CI/CD и инфраструктура", days: [
+              { day: 155, title: "CI/CD основы", time: "2 ч", task: "Пайплайн принципы.", links: [] },
+              { day: 156, title: "GitHub Actions", time: "2 ч", task: "Workflow install+test+build.", links: [] },
+              { day: 157, title: "Деплой шаг", time: "2 ч", task: "Автопубликация.", links: [] },
+              { day: 158, title: "Docker ввод", time: "2 ч", task: "Dockerfile React/Node.", links: [] },
+              { day: 159, title: "Docker Compose", time: "2 ч", task: "frontend+api локально.", links: [] },
+              { day: 160, title: "Проект: Prod конфигурация", time: "4-5 ч", task: "CI+Docker+деплой.", links: [] },
+              { day: 161, title: "Стресс тест", time: "4-5 ч", task: "autocannon/Lighthouse.", links: [] }
+            ]
+          },
+          {
+            week: 24, title: "Неделя 24 — Advanced & Real-time", days: [
+              { day: 162, title: "Web Components", time: "2 ч", task: "Custom Elements + Shadow DOM.", links: [] },
+              { day: 163, title: "i18n", time: "2 ч", task: "next-i18next настройка.", links: [] },
+              { day: 164, title: "WebSockets", time: "2 ч", task: "Socket.io чат.", links: [] },
+              { day: 165, title: "Микро-фронтенды", time: "2 ч", task: "Концепция и кейсы.", links: [] },
+              { day: 166, title: "GraphQL Subscriptions", time: "2 ч", task: "Реал-тайм канал.", links: [] },
+              { day: 167, title: "Проект: Real-time", time: "4-5 ч", task: "Чат/панель мониторинга.", links: [] },
+              { day: 168, title: "Оптимизация real-time", time: "4-5 ч", task: "Производительность и деплой.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 7
+      {
+        month: 7, title: "Месяц 7. Повторение и итоговый проект (подготовка)", weeks: [
+          {
+            week: 25, title: "Неделя 25 — Повторение", days: [
+              { day: 169, title: "Анализ прогресса", time: "2 ч", task: "Список тем для повторения.", links: [] },
+              { day: 170, title: "HTML/CSS повтор", time: "2 ч", task: "Семантика + адаптивность.", links: [] },
+              { day: 171, title: "JavaScript повтор", time: "2 ч", task: "Типы, функции, async.", links: [] },
+              { day: 172, title: "React/Next повтор", time: "2 ч", task: "Компоненты/SSR.", links: [] },
+              { day: 173, title: "Git/CI повтор", time: "2 ч", task: "Workflows.", links: [] },
+              { day: 174, title: "План итогового проекта", time: "4-5 ч", task: "ТЗ, прототип.", links: [] },
+              { day: 175, title: "Подготовка репозитория", time: "4-5 ч", task: "Структура, стек.", links: [] }
+            ]
+          },
+          {
+            week: 26, title: "Неделя 26 — Итоговый проект: разработка", days: [
+              { day: 176, title: "Старт проекта", time: "2 ч", task: "Создание базовой структуры.", links: [] },
+              { day: 177, title: "UI каркас", time: "2 ч", task: "Навигация/шапка.", links: [] },
+              { day: 178, title: "Состояние", time: "2 ч", task: "Context/Redux.", links: [] },
+              { day: 179, title: "Backend/API", time: "2 ч", task: "Подключение API или mock.", links: [] },
+              { day: 180, title: "Ключевой функционал", time: "2 ч", task: "CRUD/поиск.", links: [] },
+              { day: 181, title: "Auth & защита", time: "4-5 ч", task: "Авторизация и ошибки.", links: [] },
+              { day: 182, title: "PWA функции", time: "4-5 ч", task: "Service Worker/offline.", links: [] }
+            ]
+          },
+          {
+            week: 27, title: "Неделя 27 — Тесты и оптимизация", days: [
+              { day: 183, title: "Юнит-тесты", time: "2 ч", task: "Покрытие логики.", links: [] },
+              { day: 184, title: "E2E тесты", time: "2 ч", task: "Основные сценарии.", links: [] },
+              { day: 185, title: "Производительность", time: "2 ч", task: "Lighthouse улучшения.", links: [] },
+              { day: 186, title: "Доступность", time: "2 ч", task: "axe DevTools.", links: [] },
+              { day: 187, title: "SEO оптимизация", time: "2 ч", task: "Metadata/OpenGraph.", links: [] },
+              { day: 188, title: "UI/UX polishing", time: "4-5 ч", task: "Правки интерфейса.", links: [] },
+              { day: 189, title: "Release подготовка", time: "4-5 ч", task: "CI/CD финальный.", links: [] }
+            ]
+          }
+        ]
+      },
+      // Месяц 8
+      {
+        month: 8, title: "Месяц 8. Презентация и финал", weeks: [
+          {
+            week: 28, title: "Неделя 28 — Завершение", days: [
+              { day: 190, title: "README", time: "2 ч", task: "Описание проекта.", links: [] },
+              { day: 191, title: "Презентация", time: "2 ч", task: "Слайды/демо.", links: [] },
+              { day: 192, title: "Самоанализ", time: "2 ч", task: "Что улучшить дальше.", links: [] },
+              { day: 193, title: "Обновление профилей", time: "2 ч", task: "GitHub/LinkedIn.", links: [] },
+              { day: 194, title: "План развития", time: "2 ч", task: "Следующие технологии.", links: [] },
+              { day: 195, title: "Open Source/Хакатоны", time: "4-5 ч", task: "Выбор репозитория.", links: [] },
+              { day: 196, title: "Финиш!", time: "4-5 ч", task: "Подведение итогов и отдых.", links: [] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // --- Подробные описания недель ---
+    const weekDescriptions = {
+      1: "Фундаментальные основы работы интернета, протокола HTTP, доменных имён и базовая публикация. Цель — понимать цепочку: пользователь → DNS → запрос → ответ браузера.",
+      2: "Семантическая HTML-разметка и базовая стилизация. Формирование устойчивого навыка аккуратной структуры документа и адаптивности.",
+      3: "Углубление в современный CSS: сетки, препроцессор, архитектура и поддерживаемость стилей.",
+      4: "Инструменты разработчика: Git workflow, npm экосистема, стандарты форматирования и качество кода.",
+      5: "Вход в JavaScript — синтаксис, базовые структуры данных, управление потоком и простые приложения.",
+      6: "Практическая работа с DOM, событиями и структурой данных в браузере.",
+      7: "Асинхронное программирование: таймеры, промисы, загрузка данных, обработка ошибок.",
+      8: "Node.js как среда выполнения + основы модульности и сборки фронтенда.",
+      9: "React: мышление в компонентах, состояние и рендеринг списков.",
+      10: "Побочные эффекты, маршрутизация, формы, глобальное состояние и архитектура данных.",
+      11: "Оптимизация, повторное использование логики, улучшение UX (анимации) и надежность (обработка ошибок, тесты).",
+      12: "Индустриальные подходы к стилизации: UI-фреймворки, утилитарные классы и сравнение методологий.",
+      13: "TypeScript — введение в типизацию, повышение надежности и рефакторинг мини-проектов.",
+      14: "GraphQL: построение схем, запросы и интеграция на клиенте.",
+      15: "Next.js: рендеринг на сервере, генерация статических страниц и оптимизация ресурсов.",
+      16: "Аутентификация, безопасность и интеграция UI-библиотек + CMS.",
+      17: "Юнит-тестирование: изоляция логики, покрытие и устойчивость к регрессиям.",
+      18: "Системное E2E тестирование пользовательских сценариев и интеграция в CI.",
+      19: "Производительность, доступность (a11y) и прогрессивные веб-приложения.",
+      20: "Кросс-платформенность: мобильные (React Native) и десктопные (Electron) клиенты.",
+      21: "Анимации и визуализация данных: повышение информативности и интерактивности интерфейсов.",
+      22: "Статическая генерация (SSG), контент через Headless CMS и оптимизация цепочки поставки контента.",
+      23: "CI/CD, контейнеризация и инфраструктурные практики для надежного диплоя.",
+      24: "Расширенные фронтенд-паттерны: real-time, микро-фронтенды, интернационализация.",
+      25: "Ревизия знаний и подготовка архитектуры итогового проекта.",
+      26: "Активная разработка ключевого функционала итогового продукта.",
+      27: "Тестовое покрытие, полировка производительности, SEO и UX.",
+      28: "Финализация, документация, презентация и дальнейшая стратегическая траектория развития."
+    };
+
+    // --- Дополнительные ссылки по ключевым словам (рессурсы добавляются, если в дне мало ссылок) ---
+    const keywordLinkGroups = [
+      { match: /internet|браузер|dns/i, links: ["MDN - Как работает браузер||https://developer.mozilla.org/ru/docs/Web/Performance/How_browsers_work", "MDN - DNS||https://developer.mozilla.org/ru/docs/Glossary/DNS"] },
+      { match: /http|fetch/i, links: ["MDN - HTTP заголовки||https://developer.mozilla.org/ru/docs/Web/HTTP/Headers", "HTTP Status Codes||https://http.cat/"] },
+      { match: /html|семантик/i, links: ["HTML Living Standard||https://html.spec.whatwg.org/", "A11y семантика||https://web.dev/learn/accessibility/semantics"] },
+      { match: /css|flex|grid|адаптив/i, links: ["MDN - Flexbox||https://developer.mozilla.org/ru/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox", "MDN - Grid||https://developer.mozilla.org/ru/docs/Web/CSS/CSS_grid_layout"] },
+      { match: /sass|scss/i, links: ["Sass Docs||https://sass-lang.com/documentation", "7-1 Pattern||https://sass-guidelin.es/#the-7-1-pattern"] },
+      { match: /git|branch|pull/i, links: ["Pro Git||https://git-scm.com/book/ru/v2", "Git Flight Rules||https://github.com/k88hudson/git-flight-rules"] },
+      { match: /node|npm|webpack|babel/i, links: ["Node.js Docs||https://nodejs.org/api/", "Webpack Concepts||https://webpack.js.org/concepts/"] },
+      { match: /javascript|переменн|функц|массив|объект|json/i, links: ["JavaScript Info||https://javascript.info/", "MDN JS Reference||https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference"] },
+      { match: /async|promise|таймер|fetch|await/i, links: ["MDN - Promises||https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise", "Async/Await Guide||https://javascript.info/async-await"] },
+      { match: /react|jsx|hook|context|state|router/i, links: ["React Docs||https://react.dev/", "React Patterns||https://reactpatterns.com/"] },
+      { match: /typescript|ts/i, links: ["TS Handbook||https://www.typescriptlang.org/docs/handbook/intro.html", "typescript-eslint||https://typescript-eslint.io/"] },
+      { match: /graphql/i, links: ["Apollo Client||https://www.apollographql.com/docs/react/", "GraphQL Best Practices||https://graphql.org/learn/best-practices/"] },
+      { match: /next\.?js|ssg|ssr/i, links: ["Next.js Routing||https://nextjs.org/docs/app/building-your-application/routing", "Next.js Data Fetching||https://nextjs.org/docs/app/building-your-application/data-fetching"] },
+      { match: /auth|jwt|security|безопас/i, links: ["OWASP Top 10||https://owasp.org/www-project-top-ten/", "Cheat Sheet TLS||https://cheatsheetseries.owasp.org/"] },
+      { match: /test|jest|cypress|rtl|юнит/i, links: ["Testing Library||https://testing-library.com/docs/", "Cypress Docs||https://docs.cypress.io/"] },
+      { match: /performance|lighthouse|оптимизац|pwa/i, links: ["web.dev Performance||https://web.dev/fast/", "Lighthouse||https://developer.chrome.com/docs/lighthouse"] },
+      { match: /accessibility|a11y|доступ/i, links: ["WCAG Overview||https://www.w3.org/WAI/standards-guidelines/wcag/", "WebAIM Checklist||https://webaim.org/standards/wcag/checklist"] },
+      { match: /pwa|service worker/i, links: ["MDN - Service Worker||https://developer.mozilla.org/ru/docs/Web/API/Service_Worker_API", "Manifest Guide||https://web.dev/add-manifest/"] },
+      { match: /docker|ci|cd|github actions/i, links: ["GitHub Actions Docs||https://docs.github.com/actions", "Docker Docs||https://docs.docker.com/"] },
+      { match: /international|i18n|локализац/i, links: ["i18next||https://www.i18next.com/", "Unicode Guide||https://home.unicode.org/"] },
+      { match: /websocket|real-time|socket/i, links: ["Socket.io Docs||https://socket.io/docs/v4", "MDN - WebSockets||https://developer.mozilla.org/ru/docs/Web/API/WebSockets_API"] },
+      { match: /micro|микро-фронтенд/i, links: ["Module Federation||https://webpack.js.org/concepts/module-federation/", "Micro-frontend Patterns||https://micro-frontends.org/"] },
+      { match: /visual|chart|d3|диаграм/i, links: ["Chart.js||https://www.chartjs.org/docs/latest/", "D3.js Guide||https://observablehq.com/@d3/learn-d3"] },
+      { match: /electron/i, links: ["Electron Docs||https://www.electronjs.org/docs", "Electron Security||https://www.electronjs.org/docs/latest/tutorial/security"] },
+      { match: /react native|expo|native/i, links: ["React Native Docs||https://reactnative.dev/", "Expo Docs||https://docs.expo.dev/"] },
+      { match: /seo/i, links: ["Google SEO Starter||https://developers.google.com/search/docs/fundamentals/seo-starter-guide", "Open Graph||https://ogp.me/"] },
+      { match: /readme|презентац|linkedin|резюме/i, links: ["Awesome README||https://github.com/matiassingers/awesome-readme", "LinkedIn Profile Tips||https://www.linkedin.com/help/linkedin/answer/a507663"] }
+    ];
+
+    // удалено дублирующее объявление state, теперь оно только в начале скрипта
+    let currentFilter = 'all';
+
+    // Инициализация темы
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+      }
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Слушаем изменения системной темы
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+          document.body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+      });
+    }
+
+    function save() {
+      localStorage.setItem('frontendPlan', JSON.stringify(state));
+    }
+
+    function toggle(day) {
+      state[day] = !state[day];
+      save();
+      updateStats();
+      render();
+    }
+
+    function updateStats() {
+      let done = Object.keys(state).filter(k => state[k]).length;
+      let left = 196 - done;
+      let pct = Math.round((done / 196) * 100);
+
+      document.getElementById('done').textContent = done;
+      document.getElementById('left').textContent = left;
+      document.getElementById('pct').textContent = pct + '%';
+
+      const bar = document.getElementById('bar');
+      bar.style.width = pct + '%';
+      bar.textContent = pct + '%';
+    }
+
+    // --- Состояние открытых списков ---
+    let openState = { months: [], weeks: [] };
+    if (localStorage.getItem('frontendOpenState')) {
+      try {
+        openState = JSON.parse(localStorage.getItem('frontendOpenState')) || { months: [], weeks: [] };
+      } catch (e) {
+        openState = { months: [], weeks: [] };
+      }
+    }
+
+    function saveOpenState() {
+      localStorage.setItem('frontendOpenState', JSON.stringify(openState));
+    }
+
+    function buildExtraLinks(day) {
+      const base = [...(day.links || [])];
+      const text = (day.title + ' ' + day.task).toLowerCase();
+      keywordLinkGroups.forEach(group => {
+        if (group.match.test(text)) {
+          group.links.forEach(l => { if (!base.includes(l)) base.push(l); });
+        }
+      });
+      return base;
+    }
+
+    function render() {
+      const html = plan.map(month => {
+        const monthProgress = `${month.weeks.reduce((s, w) => s + w.days.filter(d => state[d.day]).length, 0)}/${month.weeks.reduce((s, w) => s + w.days.length, 0)}`;
+        return `
+        <div class="month">
+          <div class="month-header" onclick="toggleMonth(${month.month})">
+            <span class="month-title">${month.title}</span>
+            <span>${monthProgress}</span>
+          </div>
+          <div id="month${month.month}" class="${openState.months.includes(month.month) ? '' : 'collapsed'}">
+            ${month.weeks.map(week => {
+          const weekProgress = `${week.days.filter(d => state[d.day]).length}/${week.days.length}`;
+          return `
+              <div class="week">
+                <div class="week-header" onclick="toggleWeek(${week.week})">
+                  <span>${week.title}</span>
+                  <span>${weekProgress}</span>
+                </div>
+                ${weekDescriptions[week.week] ? `<div class=\"week-desc\">${weekDescriptions[week.week]}</div>` : ''}
+                <div id="week${week.week}" class="days ${openState.weeks.includes(week.week) ? '' : 'collapsed'}">
+                  ${week.days.map(day => {
+            const effectiveLinks = buildExtraLinks(day);
+            return `
+                    <div class="day ${state[day.day] ? 'done' : ''}" data-day="${day.day}">
+                      <div class="day-header">
+                        <input type="checkbox" ${state[day.day] ? 'checked' : ''} onchange="toggle(${day.day})">
+                        <div class="day-info">
+                          <div class="day-title">
+                            День ${day.day}: ${day.title}
+                            <span class="day-time">${day.time}</span>
+                          </div>
+                          <div class="day-task">${day.task}</div>
+                          ${effectiveLinks.length ? `
+                            <div class="day-resources">
+                              ${effectiveLinks.map(l => {
+              const [title, url] = l.split('||');
+              return `<a href=\"${url}\" target=\"_blank\">📚 ${title}</a>`;
+            }).join('')}
+                            </div>
+                          ` : ''}
+                        </div>
+                      </div>
+                    </div>`;
+          }).join('')}
+                </div>
+              </div>`;
+        }).join('')}
+          </div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('content').innerHTML = html;
+      applyFilter();
+    }
+
+    function toggleMonth(m) {
+      const idx = openState.months.indexOf(m);
+      if (idx === -1) {
+        openState.months.push(m);
+      } else {
+        openState.months.splice(idx, 1);
+      }
+      // При закрытии месяца закрываем все его недели
+      if (openState.months.indexOf(m) === -1) {
+        const monthObj = plan.find(mon => mon.month === m);
+        if (monthObj) {
+          monthObj.weeks.forEach(w => {
+            const wIdx = openState.weeks.indexOf(w.week);
+            if (wIdx !== -1) openState.weeks.splice(wIdx, 1);
+          });
+        }
+      }
+      saveOpenState();
+      render();
+    }
+
+    function toggleWeek(w) {
+      const idx = openState.weeks.indexOf(w);
+      if (idx === -1) {
+        openState.weeks.push(w);
+      } else {
+        openState.weeks.splice(idx, 1);
+      }
+      saveOpenState();
+      render();
+    }
+
+    function filter(type) {
+      currentFilter = type;
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      applyFilter();
+    }
+
+    function applyFilter() {
+      document.querySelectorAll('.day').forEach(day => {
+        const dayNum = day.dataset.day;
+        const done = state[dayNum];
+        let show = currentFilter === 'all' ||
+          (currentFilter === 'done' && done) ||
+          (currentFilter === 'todo' && !done);
+        day.style.display = show ? 'block' : 'none';
+      });
+    }
+
+    function reset() {
+      if (confirm('Вы уверены, что хотите сбросить весь прогресс обучения?')) {
+        state = {};
+        save();
+        updateStats();
+        render();
+      }
+    }
+
+    document.getElementById('search').oninput = (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.day').forEach(day => {
+        const match = day.textContent.toLowerCase().includes(term);
+        day.style.display = match ? 'block' : 'none';
+      });
+    };
+
+    updateStats();
+    render();
+  </script>
+</body>
+
+</html>
