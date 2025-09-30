@@ -389,7 +389,11 @@
 
     .day:hover { transform:none; box-shadow:none; }
 
-    .day.done .day-header { border-color:#22c55e; background:rgba(34,197,94,.08); }
+  .day.done .day-header { border-color:#22c55e; background:rgba(34,197,94,.08); }
+  /* Зачёркивание завершённого дня (как неделя) */
+  .day.done .day-header .day-title { text-decoration: line-through; opacity:.65; }
+  .day.done .day-header .day-time { opacity:.75; filter:saturate(.6); }
+  .day-header .day-title { transition: opacity .3s, text-decoration-color .3s; }
 
   .day-header { display:flex; gap:14px; margin:0; align-items:center; cursor:pointer; background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:10px; padding:10px 14px 10px 50px; min-height:48px; position:relative; }
 
@@ -687,7 +691,6 @@
       }
     }
   </style>
-  </style>
 </head>
 
 <body>
@@ -801,6 +804,17 @@
         if(auth.setPersistence){
           auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e=>console.warn('Persistence set error', e));
         }
+        let redirectHandled=false;
+        // Обработка возможного redirect-входа (fallback сценарий)
+        auth.getRedirectResult().then(res=>{
+          if(res && res.user){
+            localStorage.setItem('cloudWasSignedIn','1');
+            // onAuthStateChanged тоже сработает, но на случай порядка вызываем обновление
+            if(!redirectHandled){ redirectHandled=true; initialCloudSync(); updateCloudUI(); }
+          }
+        }).catch(err=>{
+          if(err && err.code !== 'auth/no-auth-event') console.warn('Redirect result error', err);
+        });
         auth.onAuthStateChanged(u=>{
           cloudUser=u;
           if(u){
@@ -821,21 +835,53 @@
       loadFirebaseCompat().then(()=>{
         if(!auth) return;
         const provider = new firebase.auth.GoogleAuthProvider();
+        const FALLBACK_CODES = new Set(['auth/popup-closed-by-user','auth/popup-blocked','auth/cancelled-popup-request']);
+        const useRedirectFallback = (err)=>{
+          if(FALLBACK_CODES.has(err.code)){
+            if(sessionStorage.getItem('redirectTried')) return; // избежать цикла
+            sessionStorage.setItem('redirectTried','1');
+            if(confirm('Окно входа не завершилось ("'+err.code+'"). Попробовать вход через перенаправление?')){
+              auth.signInWithRedirect(provider).catch(e=>alert('Redirect вход не удался: '+e.message));
+            }
+          }
+        };
         if(auth.currentUser && auth.currentUser.isAnonymous){
           auth.currentUser.linkWithPopup(provider)
-            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); updateCloudUI(); initialCloudSync(); })
+            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); initialCloudSync(); updateCloudUI(); console.log('[Auth] Linked anonymous -> Google'); })
             .catch(err=>{
               if(err.code === 'auth/credential-already-in-use'){
-                auth.signInWithPopup(provider).then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); cloudMerge(); }).catch(e=>alert('Ошибка входа: '+e.message));
-              } else alert('Ошибка связывания: '+err.message);
+                auth.signInWithPopup(provider)
+                  .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); cloudMerge(); updateCloudUI(); console.log('[Auth] Recovered existing Google credential'); })
+                  .catch(e=>{
+                    if(e.code === 'auth/unauthorized-domain'){
+                      alert('Домен не авторизован. Добавьте '+location.hostname+' в Firebase Authentication → Authorized domains.');
+                    } else if(FALLBACK_CODES.has(e.code)){
+                      useRedirectFallback(e);
+                    } else if(e.code === 'auth/popup-closed-by-user'){
+                      alert('Окно входа закрыто. Повторите попытку.');
+                    } else {
+                      alert('Ошибка входа: '+e.message);
+                    }
+                  });
+              } else if(FALLBACK_CODES.has(err.code)){
+                useRedirectFallback(err);
+              } else if(err.code === 'auth/popup-closed-by-user'){
+                alert('Окно входа закрыто. Повторите попытку.');
+              } else {
+                alert('Ошибка связывания: '+err.message);
+              }
             });
         } else {
           auth.signInWithPopup(provider)
-            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); initialCloudSync(); })
+            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); initialCloudSync(); updateCloudUI(); console.log('[Auth] Signed in with Google'); })
             .catch(e=>{
-              if(e?.code === 'auth/unauthorized-domain'){
-                console.warn('[Firebase] Unauthorized domain. Требуется добавить текущий хост в Firebase → Authentication → Settings → Authorized domains.');
-                alert('Домен не авторизован для OAuth.\n\nДобавь: "'+location.hostname+'" в Firebase Console → Authentication → Settings → Authorized domains.');
+              if(e.code === 'auth/unauthorized-domain'){
+                console.warn('[Firebase] Unauthorized domain.');
+                alert('Домен не авторизован для OAuth. Добавьте "'+location.hostname+'" в Firebase Console → Authentication → Authorized domains.');
+              } else if(FALLBACK_CODES.has(e.code)){
+                useRedirectFallback(e);
+              } else if(e.code === 'auth/popup-closed-by-user'){
+                alert('Окно авторизации закрыто. Повторите попытку.');
               } else {
                 alert('Ошибка входа: '+e.message);
               }
@@ -844,7 +890,7 @@
       });
     }
     function cloudSignIn(){ cloudGoogleSignIn(); }
-    function cloudSignOut(){ if(auth && cloudUser) auth.signOut().finally(()=>{ localStorage.removeItem('cloudWasSignedIn'); }); }
+  function cloudSignOut(){ if(auth && cloudUser) auth.signOut().finally(()=>{ localStorage.removeItem('cloudWasSignedIn'); cloudUser=null; updateCloudUI(); }); }
     function snapshotLocal(){ return { version:2, exportedAt:new Date().toISOString(), state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme') }; }
   function hashSnapshotStr(str){ let h=0,i=0; for(; i<str.length; i++){ h=(h*31 + str.charCodeAt(i))|0; } return h.toString(16); }
   function maybeStoreHistory(force=false){ try { const snap=snapshotLocal(); const str=JSON.stringify(snap); const h=hashSnapshotStr(str); const now=Date.now(); const last=historyBuffer[0]; if(force || !last || last.hash!==h){ historyBuffer.unshift({ts:now, hash:h, data:snap}); if(historyBuffer.length>HISTORY_LIMIT) historyBuffer.pop(); localStorage.setItem(HISTORY_KEY, JSON.stringify(historyBuffer)); } } catch(e){ console.warn('history error',e);} }
@@ -1510,24 +1556,16 @@
         if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)+' · '+sizeStr+'KB') : '';
         if(gBtn){ gBtn.className='cloud-g-btn full'; gBtn.innerHTML='<span class="g-ic">'+googleSVGIcon()+'</span><span>Связать</span>'; gBtn.title='Связать с Google'; gBtn.onclick=cloudGoogleSignIn; }
       } else {
-        // Google пользователь
         if(cloudSyncPending){
-          indicator.classList.add('pending');
-          dot.classList.add('state-pending','pulse');
-          hint.textContent='PEND';
+          indicator.classList.add('pending'); dot.classList.add('state-pending','pulse'); hint.textContent='PEND';
         } else if(remoteMs > localMs + 2500){
-          indicator.classList.add('warn');
-          dot.classList.add('state-warn');
-          hint.textContent='STALE';
+          indicator.classList.add('warn'); dot.classList.add('state-warn'); hint.textContent='STALE';
         } else {
-          indicator.classList.add('synced');
-          dot.classList.add('state-ok');
-          hint.textContent='OK';
+          indicator.classList.add('synced'); dot.classList.add('state-ok'); hint.textContent='OK';
         }
         if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)+' · '+sizeStr+'KB') : '';
         if(gBtn){ gBtn.className='cloud-g-btn signout full'; gBtn.innerHTML='<span class="g-ic">'+googleSVGIcon()+'</span><span>Выйти</span>'; gBtn.title='Выйти из Google'; gBtn.onclick=cloudSignOut; }
       }
-      // Обновляем title (tooltips)
       const map={OFF:'Не подключено', ANON:'Аноним (не синхр. между устройствами)', PEND:'Сохранение…', STALE:'В облаке свежее (обновить/слиять)', OK:'Все синхронизировано'};
       indicator.title='Облако: '+(map[hint.textContent]||hint.textContent);
     }
@@ -1535,6 +1573,19 @@
     function googleSVGIcon(){ return '\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>'; }
     function bytesToKB(b){ return (b/1024).toFixed(1)+' KB'; }
     function escapeHTML(str){ return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]||c)); }
+    // Форматирование даты для облачного индикатора: если сегодня -> HH:MM, иначе -> DD.MM HH:MM
+    function fmtDate(d){
+      try {
+        if(!d) return '';
+        if(!(d instanceof Date)) d = new Date(d);
+        const pad = n => (n<10?'0':'')+n;
+        const now = new Date();
+        const sameDay = d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+        const time = pad(d.getHours())+':'+pad(d.getMinutes());
+        if(sameDay) return time;
+        return pad(d.getDate())+'.'+pad(d.getMonth()+1)+' '+time; // без года чтобы короче
+      } catch(_){ return ''; }
+    }
     function renderUserLinks(day){
       const ul = document.querySelector(`#userLinks${day}`); if(!ul) return;
       const list = (attachmentsState[day]?.links)||[];
@@ -1703,7 +1754,8 @@
     function save(){ localStorage.setItem('frontendPlan', JSON.stringify(state)); scheduleCloudUpload(); }
 
     function toggle(day) {
-      state[day] = !state[day];
+      // Если было выполнено – удаляем ключ (чистый объект), иначе ставим true
+      if(state[day]) delete state[day]; else state[day] = true;
       save();
       updateStats();
       render();
@@ -2056,12 +2108,16 @@
     }
 
     function reset() {
-      if (confirm('Вы уверены, что хотите сбросить весь прогресс обучения?')) {
-        state = {};
-        save();
-        updateStats();
-        render();
-      }
+      if (!confirm('Сбросить весь прогресс (отметки дней)?')) return;
+      state = {};
+      try { localStorage.removeItem('frontendPlan'); } catch(_){ }
+      // Сбрасываем локальный хэш, чтобы облако приняло новый пустой снапшот
+      lastUploadedHash = null;
+      maybeStoreHistory(true);
+      save(); // сохранит пустое состояние и поставит sync
+      updateStats();
+      render();
+      flashIndicator();
     }
 
     document.getElementById('search').oninput = (e) => {
