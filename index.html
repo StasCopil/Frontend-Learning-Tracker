@@ -791,7 +791,26 @@
         .catch(e=>console.warn('Firebase load error',e));
     }
     function initCloud(){
-      try { auth=firebase.auth(); db=firebase.firestore(); auth.onAuthStateChanged(u=>{cloudUser=u; updateCloudUI(); if(u) fetchRemoteMeta();}); } catch(e){ console.warn('Cloud init error',e); }
+      try {
+        auth=firebase.auth();
+        db=firebase.firestore();
+        // Явно задаём LOCAL персистентность (по умолчанию так и есть, но делаем явно для предсказуемости)
+        if(auth.setPersistence){
+          auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e=>console.warn('Persistence set error', e));
+        }
+        auth.onAuthStateChanged(u=>{
+          cloudUser=u;
+          if(u){
+            // Сохраняем маркер, чтобы при перезагрузке авто-подгрузить Firebase
+            localStorage.setItem('cloudWasSignedIn','1');
+            fetchRemoteMeta();
+          } else {
+            // Если пользователь вышел — убираем маркер
+            localStorage.removeItem('cloudWasSignedIn');
+          }
+          updateCloudUI();
+        });
+      } catch(e){ console.warn('Cloud init error',e); }
     }
     // ==== Аутентификация (Google + аноним) ====
     function cloudAnonSignIn(){ loadFirebaseCompat().then(()=>{ if(!auth) return; if(cloudUser){ alert('Уже вошли'); return;} auth.signInAnonymously().catch(e=>alert('Ошибка входа: '+e.message)); }); }
@@ -801,15 +820,15 @@
         const provider = new firebase.auth.GoogleAuthProvider();
         if(auth.currentUser && auth.currentUser.isAnonymous){
           auth.currentUser.linkWithPopup(provider)
-            .then(()=>{ updateCloudUI(); initialCloudSync(); })
+            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); updateCloudUI(); initialCloudSync(); })
             .catch(err=>{
               if(err.code === 'auth/credential-already-in-use'){
-                auth.signInWithPopup(provider).then(()=>{ cloudMerge(); }).catch(e=>alert('Ошибка входа: '+e.message));
+                auth.signInWithPopup(provider).then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); cloudMerge(); }).catch(e=>alert('Ошибка входа: '+e.message));
               } else alert('Ошибка связывания: '+err.message);
             });
         } else {
           auth.signInWithPopup(provider)
-            .then(()=>{ initialCloudSync(); })
+            .then(()=>{ localStorage.setItem('cloudWasSignedIn','1'); initialCloudSync(); })
             .catch(e=>{
               if(e?.code === 'auth/unauthorized-domain'){
                 console.warn('[Firebase] Unauthorized domain. Требуется добавить текущий хост в Firebase → Authentication → Settings → Authorized domains.');
@@ -822,7 +841,7 @@
       });
     }
     function cloudSignIn(){ cloudGoogleSignIn(); }
-    function cloudSignOut(){ if(auth && cloudUser) auth.signOut(); }
+    function cloudSignOut(){ if(auth && cloudUser) auth.signOut().finally(()=>{ localStorage.removeItem('cloudWasSignedIn'); }); }
     function snapshotLocal(){ return { version:2, exportedAt:new Date().toISOString(), state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme') }; }
     function applySnapshot(obj){ if(!obj) return; if(obj.state) state=obj.state; if(obj.notesState) notesState=obj.notesState; if(obj.attachmentsState) attachmentsState=obj.attachmentsState; if(obj.subtasksState) subtasksState=obj.subtasksState; if(obj.extraOpen) extraOpen=obj.extraOpen; if(obj.openState) openState=obj.openState; if(obj.sectionOpen) sectionOpen=obj.sectionOpen; if(obj.theme){ document.body.setAttribute('data-theme', obj.theme); localStorage.setItem('theme', obj.theme);} save(); saveNotes(); saveAttachments(); saveSubtasks(); saveExtraOpen(); saveOpenState(); saveSectionOpen(); updateStats(); render(); }
     function docRef(){ if(!cloudUser) return null; return db.collection('users').doc(cloudUser.uid); }
@@ -2001,6 +2020,11 @@
       });
     };
 
+    // Автозагрузка Firebase, если ранее был вход
+    if(localStorage.getItem('cloudWasSignedIn')){
+      // loadFirebaseCompat уже установит onAuthStateChanged и восстановит пользователя из persistence
+      if(typeof loadFirebaseCompat === 'function') loadFirebaseCompat();
+    }
     updateStats();
     render();
     if(typeof updateCloudUI === 'function') updateCloudUI();
