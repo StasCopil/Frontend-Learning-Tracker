@@ -656,6 +656,26 @@
   .cloud-btn-g { width:42px; padding:8px !important; display:flex; align-items:center; justify-content:center; }
   .cloud-btn-g .g-icon { width:20px; height:20px; display:block; }
   .cloud-btn-g svg { width:100%; height:100%; display:block; }
+  .cloud-g-btn { width:42px; height:42px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-color); background: var(--bg-tertiary); border-radius:14px; cursor:pointer; transition: var(--transition); position:relative; }
+  .cloud-g-btn:hover { background: var(--bg-card); box-shadow:0 4px 12px var(--shadow-color); }
+  .cloud-g-btn:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+  .cloud-g-btn svg { width:22px; height:22px; display:block; }
+  .cloud-g-btn.signout { background: linear-gradient(135deg,#ef4444,#f97316); color:#fff; font-weight:700; font-size:12px; letter-spacing:.5px; }
+  .cloud-g-btn.signout:hover { filter:brightness(1.1); }
+  /* Минималистичный индикатор облака */
+  .cloud-panel.minimalist { padding:8px 32px 0; gap:14px; }
+  .cloud-indicator { position:relative; display:inline-flex; align-items:center; gap:8px; background: var(--bg-tertiary); border:1px solid var(--border-color); padding:8px 14px; border-radius:18px; font-size:12px; font-weight:600; cursor:pointer; color: var(--text-secondary); transition: var(--transition); backdrop-filter: blur(6px); }
+  .cloud-indicator:hover { background: var(--bg-card); color: var(--text-primary); box-shadow:0 4px 16px var(--shadow-color); }
+  .cloud-indicator:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+  .cloud-indicator svg { opacity:.9; }
+  .cloud-dot { width:10px; height:10px; border-radius:50%; background:#f87171; box-shadow:0 0 0 4px rgba(248,113,113,.2); position:relative; }
+  .cloud-dot.state-ok { background:#34d399; box-shadow:0 0 0 4px rgba(52,211,153,.25); }
+  .cloud-dot.state-warn { background:#fbbf24; box-shadow:0 0 0 4px rgba(251,191,36,.25); }
+  .cloud-dot.state-off { background:#f87171; box-shadow:0 0 0 4px rgba(248,113,113,.25); }
+  .cloud-hint { font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color: var(--text-muted); }
+  .cloud-indicator.synced .cloud-hint { color:#34d399; }
+  .cloud-indicator.warn .cloud-hint { color:#fbbf24; }
+  .cloud-indicator.off .cloud-hint { color:#f87171; }
 
     /* Плавное раскрытие внутренних секций */
     .section-body { overflow: hidden; transition: max-height .45s ease; }
@@ -722,23 +742,14 @@
       <button class="btn-reset" onclick="reset()">Сбросить прогресс</button>
     </div>
 
-    <div class="cloud-panel">
-      <div class="cloud-badge" id="cloudStatus">☁️ Облако: оффлайн</div>
-      <button class="cloud-btn cloud-btn-g" id="cloudGoogleBtn" type="button" onclick="cloudGoogleSignIn()" aria-label="Google вход" title="Google вход">
-        <span class="g-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>
-            <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>
-            <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>
-            <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>
-          </svg>
-        </span>
-      </button>
-      <button class="cloud-btn" id="cloudAnonBtn" type="button" onclick="cloudAnonSignIn()">👤 Аноним</button>
-      <button class="cloud-btn" id="cloudUploadBtn" type="button" onclick="cloudUpload()" disabled>⬆ Сохранить</button>
-      <button class="cloud-btn" id="cloudDownloadBtn" type="button" onclick="cloudDownload()" disabled>⬇ Загрузить</button>
-      <button class="cloud-btn" id="cloudMergeBtn" type="button" onclick="cloudMerge()" disabled>🔀 Слить</button>
-      <div class="cloud-last" id="cloudLastSync"></div>
+    <div class="cloud-panel minimalist">
+      <div class="cloud-indicator" id="cloudStatus" role="button" tabindex="0" title="Облако" aria-label="Статус облака" onclick="cloudIndicatorClick(event)" onkeydown="if(event.key==='Enter') cloudIndicatorClick(event)">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M19.36 10.46C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h12.5c3.04 0 5.5-2.46 5.5-5.5 0-2.89-2.27-5.27-5.14-5.54z"/></svg>
+        <span class="cloud-dot" id="cloudDot"></span>
+        <span class="cloud-hint" id="cloudHint"></span>
+      </div>
+      <button class="cloud-g-btn" id="cloudGoogleBtn" type="button" aria-label="Google вход" title="Google вход"></button>
+      <div class="cloud-last" id="cloudLastSync" aria-live="polite"></div>
     </div>
 
     <div style="padding:0 32px 8px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
@@ -1425,42 +1436,52 @@
       if(!arr.length){ listEl.innerHTML = '<li style="opacity:.5;font-size:11px;">(нет заметок)</li>'; return; }
       listEl.innerHTML = arr.map((n,i)=>`<li><span class="inline-badge">NOTE</span><span class="note-text">${n.text}</span><button class="x-btn" title="Удалить" onclick="deleteNote(${day},${i})">✕</button></li>`).join('');
     }
-    function addLink(day){
-      const t = document.getElementById('linkTitle'+day);
-      const u = document.getElementById('linkUrl'+day);
-      const title = (t.value||'Ссылка').trim();
-      const url = (u.value||'').trim();
-      if(!/^https?:\/\//i.test(url)){ alert('Укажите корректный URL (http/https).'); return; }
-      if(!attachmentsState[day]) attachmentsState[day] = { links: [], files: [] };
-      attachmentsState[day].links.push({ title: escapeHTML(title), url: url });
-      saveAttachments();
-      t.value=''; u.value='';
-      // перерисуем только список
-      renderUserLinks(day);
-      updateMaterialBadge(day);
+    function updateCloudUI(){
+      const indicator=document.getElementById('cloudStatus');
+      const dot=document.getElementById('cloudDot');
+      const hint=document.getElementById('cloudHint');
+      const ls=document.getElementById('cloudLastSync');
+      const gBtn=document.getElementById('cloudGoogleBtn');
+      if(!indicator || !dot || !hint) return;
+      const lastSyncTs=localStorage.getItem('cloudLastSync');
+      const lastSync= lastSyncTs? new Date(parseInt(lastSyncTs)):null;
+      indicator.classList.remove('synced','warn','off');
+      dot.className='cloud-dot';
+      if(!cloudUser){
+        indicator.classList.add('off');
+        dot.classList.add('state-off');
+        hint.textContent='OFF';
+        if(ls) ls.textContent='';
+        if(gBtn){
+          gBtn.className='cloud-g-btn';
+          gBtn.innerHTML='\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>';
+          gBtn.title='Google вход';
+          gBtn.onclick=cloudGoogleSignIn;
+        }
+      } else if(cloudUser.isAnonymous){
+        indicator.classList.add('warn');
+        dot.classList.add('state-warn');
+        hint.textContent='ANON';
+        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)) : '';
+        if(gBtn){
+          gBtn.className='cloud-g-btn';
+          gBtn.innerHTML='\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>';
+          gBtn.title='Связать с Google';
+          gBtn.onclick=cloudGoogleSignIn;
+        }
+      } else {
+        indicator.classList.add('synced');
+        dot.classList.add('state-ok');
+        hint.textContent='OK';
+        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)) : '';
+        if(gBtn){
+          gBtn.className='cloud-g-btn signout';
+          gBtn.textContent='OUT';
+          gBtn.title='Выйти из Google';
+          gBtn.onclick=cloudSignOut;
+        }
+      }
     }
-    function deleteLink(day, idx){ if(!attachmentsState[day]) return; attachmentsState[day].links.splice(idx,1); saveAttachments(); renderUserLinks(day); updateMaterialBadge(day); }
-    function handleFileUpload(day, input){
-      const files = Array.from(input.files||[]);
-      if(!files.length) return;
-      if(!attachmentsState[day]) attachmentsState[day] = { links: [], files: [] };
-      const MAX_SIZE = 200 * 1024; // 200KB per file
-      let warn = [];
-      let readCount = 0;
-      files.forEach(file => {
-        if(file.size > MAX_SIZE){ warn.push(file.name); return; }
-        const reader = new FileReader();
-        reader.onload = e => {
-          attachmentsState[day].files.push({ name: escapeHTML(file.name), data: e.target.result, size: file.size });
-          readCount++;
-          if(readCount === files.filter(f=>f.size<=MAX_SIZE).length){ saveAttachments(); renderUserFiles(day); updateMaterialBadge(day); }
-        };
-        reader.readAsDataURL(file);
-      });
-      if(warn.length) alert('Некоторые файлы превышают лимит 200KB и не были добавлены: '+warn.join(', '));
-      input.value='';
-    }
-    function deleteFile(day, idx){ if(!attachmentsState[day]) return; attachmentsState[day].files.splice(idx,1); saveAttachments(); renderUserFiles(day); updateMaterialBadge(day); }
     function bytesToKB(b){ return (b/1024).toFixed(1)+' KB'; }
     function escapeHTML(str){ return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]||c)); }
     function renderUserLinks(day){
