@@ -352,6 +352,7 @@
       justify-content: space-between;
       transition: all 0.3s;
       border-left: 4px solid transparent;
+        align-items:center;
     }
 
     .week-header:hover {
@@ -359,10 +360,18 @@
       border-left-color: #8b5cf6;
       padding-left: 32px;
     }
+      .week-header input.week-cb { width:20px; height:20px; cursor:pointer; accent-color:#8b5cf6; margin-right:18px; flex:0 0 auto; }
+      .week-header.done { border-left-color:#22c55e; }
     .week-header:focus-visible { outline:none; box-shadow: var(--focus-ring); }
-    .week-progress { margin:0 24px 18px 24px; height:10px; background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:14px; position:relative; overflow:hidden; }
+  .week-progress { margin:0 24px 18px 24px; height:10px; background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:14px; position:relative; overflow:hidden; }
     .week-progress span { position:absolute; left:0; top:0; bottom:0; width:0; background: var(--gradient-primary); display:block; transition: width .6s cubic-bezier(.4,0,.2,1); }
     .week-progress::after { content:attr(data-label); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color: var(--text-secondary); mix-blend-mode: difference; pointer-events:none; }
+  /* Более тонкий стиль полосы между неделями */
+  /* Центрируем и выравниваем прогресс недели по тем же отступам, что и блок целей недели (24px) */
+  .week-progress { height:6px; margin:6px 24px 14px 24px; border-radius:8px; }
+  .week-progress::after { font-size:9px; letter-spacing:.5px; }
+  .week-header.week-done .week-title-text { text-decoration: line-through; opacity:.65; }
+  .week-header.week-done { border-left-color:#22c55e; }
 
     .week-desc {
       background: var(--bg-secondary);
@@ -374,58 +383,31 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    .days {
-      padding: 24px;
-      background: var(--bg-secondary);
-    }
+    .days { padding:24px; background: var(--bg-secondary); }
 
-    .day {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--accent-color);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 20px;
-      transition: all 0.3s;
-    }
+    .day { background:transparent; border:none; padding:0; margin:0 0 14px; transition:all .3s; }
 
-    .day:hover {
-      transform: translateX(6px);
-      box-shadow: 0 12px 24px var(--glow);
-    }
+    .day:hover { transform:none; box-shadow:none; }
 
-    .day.done {
-      background: rgba(34, 197, 94, 0.08);
-      border-left-color: #22c55e;
-    }
+    .day.done .day-header { border-color:#22c55e; background:rgba(34,197,94,.08); }
 
-    .day-header {
-      display: flex;
-      gap: 18px;
-      margin-bottom: 16px;
-      align-items: flex-start;
-    }
+  .day-header { display:flex; gap:14px; margin:0; align-items:center; cursor:pointer; background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:10px; padding:10px 14px 10px 50px; min-height:48px; position:relative; }
 
-    .day-header input {
-      width: 26px;
-      height: 26px;
-      cursor: pointer;
-      margin-top: 2px;
-      accent-color: #8b5cf6;
-      border-radius: 6px;
-    }
+  .day-header input { width:22px; height:22px; cursor:pointer; margin:0; accent-color:#8b5cf6; border-radius:6px; position:absolute; left:16px; top:50%; transform:translateY(-50%); }
+  .day-header > div:first-child { gap:0 !important; }
+    .day-header:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+  /* Стрелка удалена */
+  .day-body { border:1px solid var(--border-color); border-top:none; border-radius:0 0 10px 10px; padding:18px 20px 22px; background: var(--bg-secondary); }
+  .day-body.collapsed { display:none; }
+  .day-header.open { border-radius:10px 10px 0 0; }
 
     .day-info {
       flex: 1;
     }
 
-    .day-title {
-      font-weight: 800;
-      font-size: 1.15em;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-      letter-spacing: -0.01em;
-    }
+    .day-title { font-weight:600; font-size:14px; color: var(--text-primary); margin:0; letter-spacing:.2px; }
+  .day-header .day-title { flex:1; text-align:center; padding-right:70px; }
+  .day-header .day-time { position:absolute; right:14px; top:50%; transform:translateY(-50%); }
 
     .day-time {
       display: inline-block;
@@ -657,6 +639,8 @@
   .cloud-btn-g .g-icon { width:20px; height:20px; display:block; }
   .cloud-btn-g svg { width:100%; height:100%; display:block; }
   .cloud-g-btn { width:42px; height:42px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-color); background: var(--bg-tertiary); border-radius:14px; cursor:pointer; transition: var(--transition); position:relative; }
+  .cloud-g-btn.full { padding:0 14px; width:auto; gap:8px; font-size:12px; font-weight:600; }
+  .cloud-g-btn.full .g-ic { width:18px; height:18px; display:inline-block; }
   .cloud-g-btn:hover { background: var(--bg-card); box-shadow:0 4px 12px var(--shadow-color); }
   .cloud-g-btn:focus-visible { outline:none; box-shadow: var(--focus-ring); }
   .cloud-g-btn svg { width:22px; height:22px; display:block; }
@@ -672,6 +656,9 @@
   .cloud-dot.state-ok { background:#34d399; box-shadow:0 0 0 4px rgba(52,211,153,.25); }
   .cloud-dot.state-warn { background:#fbbf24; box-shadow:0 0 0 4px rgba(251,191,36,.25); }
   .cloud-dot.state-off { background:#f87171; box-shadow:0 0 0 4px rgba(248,113,113,.25); }
+  .cloud-dot.state-pending { background:#3b82f6; box-shadow:0 0 0 4px rgba(59,130,246,.3); }
+  @keyframes pulseCloud { 0%{ transform:scale(1); opacity:1;} 50%{ transform:scale(1.45); opacity:.35;} 100%{ transform:scale(1); opacity:1;} }
+  .cloud-dot.pulse::after { content:""; position:absolute; inset:0; border-radius:inherit; background:currentColor; animation:pulseCloud 1.4s ease-in-out infinite; filter:blur(2px); opacity:.5; }
   .cloud-hint { font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color: var(--text-muted); }
   .cloud-indicator.synced .cloud-hint { color:#34d399; }
   .cloud-indicator.warn .cloud-hint { color:#fbbf24; }
@@ -748,7 +735,9 @@
         <span class="cloud-dot" id="cloudDot"></span>
         <span class="cloud-hint" id="cloudHint"></span>
       </div>
-      <button class="cloud-g-btn" id="cloudGoogleBtn" type="button" aria-label="Google вход" title="Google вход"></button>
+  <button class="cloud-g-btn full" id="cloudGoogleBtn" type="button" aria-label="Войти через Google" title="Войти через Google"></button>
+      <button class="cloud-mini-btn" id="cloudBackupBtn" type="button" aria-label="Быстрый бэкап" title="Экспорт JSON" onclick="quickBackup()">💾</button>
+      <button class="cloud-mini-btn" id="cloudRestoreBtn" type="button" aria-label="Восстановить" title="Восстановить из локальной истории" onclick="restoreLastSnapshot()">⟲</button>
       <div class="cloud-last" id="cloudLastSync" aria-live="polite"></div>
     </div>
 
@@ -789,7 +778,10 @@
       measurementId: "G-2PD3FS0WCS" // не используется напрямую (analytics не подключаем)
     };
     // (Проверка плейсхолдеров удалена: конфигурация заполнена)
-    let firebaseLoaded=false, auth=null, db=null, cloudUser=null, remoteSnapshotMeta=null;
+  let firebaseLoaded=false, auth=null, db=null, cloudUser=null, remoteSnapshotMeta=null, cloudSyncPending=false;
+  let lastUploadedHash=null, lastUploadAt=0, cloudRetry=0; // минимизация лишних записей
+  let historyBuffer=[]; const HISTORY_KEY='historySnapshotsV1'; const HISTORY_LIMIT=10;
+  (function loadHistory(){ try{ historyBuffer=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]'); } catch(_){ historyBuffer=[]; } })();
     function loadFirebaseCompat(){
       if(firebaseLoaded) return Promise.resolve();
       const scripts=[
@@ -854,54 +846,109 @@
     function cloudSignIn(){ cloudGoogleSignIn(); }
     function cloudSignOut(){ if(auth && cloudUser) auth.signOut().finally(()=>{ localStorage.removeItem('cloudWasSignedIn'); }); }
     function snapshotLocal(){ return { version:2, exportedAt:new Date().toISOString(), state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme') }; }
+  function hashSnapshotStr(str){ let h=0,i=0; for(; i<str.length; i++){ h=(h*31 + str.charCodeAt(i))|0; } return h.toString(16); }
+  function maybeStoreHistory(force=false){ try { const snap=snapshotLocal(); const str=JSON.stringify(snap); const h=hashSnapshotStr(str); const now=Date.now(); const last=historyBuffer[0]; if(force || !last || last.hash!==h){ historyBuffer.unshift({ts:now, hash:h, data:snap}); if(historyBuffer.length>HISTORY_LIMIT) historyBuffer.pop(); localStorage.setItem(HISTORY_KEY, JSON.stringify(historyBuffer)); } } catch(e){ console.warn('history error',e);} }
+  function quickBackup(){ const data=snapshotLocal(); const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); const ts=new Date().toISOString().replace(/[:T]/g,'-').split('.')[0]; a.href=URL.createObjectURL(blob); a.download='learning-backup-'+ts+'.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); maybeStoreHistory(true); flashIndicator(); }
+  function restoreLastSnapshot(){ if(!historyBuffer.length){ alert('История пуста'); return;} if(!confirm('Восстановить последнее сохранённое состояние? Текущее перезапишется.')) return; applySnapshot(historyBuffer[0].data); cloudSyncPending=true; scheduleCloudUpload(); }
+  function flashIndicator(){ const ind=document.getElementById('cloudStatus'); if(ind){ ind.classList.add('flash-ok'); setTimeout(()=>ind.classList.remove('flash-ok'),900); } }
     function applySnapshot(obj){ if(!obj) return; if(obj.state) state=obj.state; if(obj.notesState) notesState=obj.notesState; if(obj.attachmentsState) attachmentsState=obj.attachmentsState; if(obj.subtasksState) subtasksState=obj.subtasksState; if(obj.extraOpen) extraOpen=obj.extraOpen; if(obj.openState) openState=obj.openState; if(obj.sectionOpen) sectionOpen=obj.sectionOpen; if(obj.theme){ document.body.setAttribute('data-theme', obj.theme); localStorage.setItem('theme', obj.theme);} save(); saveNotes(); saveAttachments(); saveSubtasks(); saveExtraOpen(); saveOpenState(); saveSectionOpen(); updateStats(); render(); }
     function docRef(){ if(!cloudUser) return null; return db.collection('users').doc(cloudUser.uid); }
-  let cloudUploadQueued=null;
-  function scheduleCloudUpload(){ if(!cloudUser || cloudUser.isAnonymous) return; if(cloudUploadQueued) clearTimeout(cloudUploadQueued); cloudUploadQueued = setTimeout(()=>cloudUpload(),1500); }
-  function cloudUpload(){ if(!cloudUser){ return;} const ref=docRef(); if(!ref) return; const data=snapshotLocal(); ref.set({data, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}).then(()=>{ localStorage.setItem('cloudLastSync', Date.now().toString()); remoteSnapshotMeta={updatedAt:new Date()}; updateCloudUI(); }).catch(e=>console.warn('Ошибка сохранения: '+e.message)); }
-  function cloudDownload(){ if(!cloudUser){ alert('Сначала войдите'); return;} const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(!snap.exists){ alert('В облаке нет данных'); return;} const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; applySnapshot(payload.data); localStorage.setItem('cloudLastSync', Date.now().toString()); updateCloudUI(); }).catch(e=>alert('Ошибка загрузки: '+e.message)); }
-  function cloudMerge(){ if(!cloudUser){ alert('Войдите'); return;} const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(!snap.exists){ cloudUpload(); return;} const remote=snap.data()?.data||{}; const merged={...remote, ...snapshotLocal()}; applySnapshot(merged); cloudUpload(); }).catch(e=>alert('Ошибка merge: '+e.message)); }
-  function initialCloudSync(){ const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(snap.exists){ const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; const remoteData=payload.data; const localTs=parseInt(localStorage.getItem('cloudLastSync')||'0'); const remoteTs=remoteSnapshotMeta.updatedAt.getTime(); if(remoteTs>localTs){ applySnapshot(remoteData); } else if(localTs && localTs>remoteTs){ cloudUpload(); } updateCloudUI(); } else { cloudUpload(); } }); }
-    function fetchRemoteMeta(){ const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(snap.exists){ const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; updateCloudUI(); } }); }
-    function fmtDate(d){ if(!d) return '-'; return d.toLocaleString(); }
-  function updateCloudUI(){
-    const st=document.getElementById('cloudStatus');
-    const gBtn=document.getElementById('cloudGoogleBtn');
-    const aBtn=document.getElementById('cloudAnonBtn');
-    const up=document.getElementById('cloudUploadBtn');
-    const dn=document.getElementById('cloudDownloadBtn');
-    const mg=document.getElementById('cloudMergeBtn');
-    const ls=document.getElementById('cloudLastSync');
-    const lastSyncTs=localStorage.getItem('cloudLastSync');
-    const lastSync= lastSyncTs? new Date(parseInt(lastSyncTs)):null;
-    if(!st) return;
-    const googleSVG = '<span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/><path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/><path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/><path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/></svg></span>';
-    if(!cloudUser){
-      st.textContent='☁️ Облако: оффлайн';
-      st.className='cloud-badge cloud-status-err';
-      if(gBtn){ gBtn.disabled=false; gBtn.innerHTML=googleSVG; gBtn.onclick=cloudGoogleSignIn; gBtn.setAttribute('aria-label','Google вход'); gBtn.title='Google вход'; }
-      if(aBtn){ aBtn.disabled=false; aBtn.textContent='👤 Аноним'; aBtn.onclick=cloudAnonSignIn; }
-      [up,dn,mg].forEach(b=>b && (b.disabled=true)); if(ls) ls.textContent='';
-    } else {
-      const anon=cloudUser.isAnonymous;
-      st.textContent= anon? '☁️ Облако: аноним' : '☁️ Облако: Google';
-      st.className='cloud-badge ' + (anon? 'cloud-status-warn':'cloud-status-ok');
-      if(gBtn){
-        if(anon){
-          gBtn.innerHTML=googleSVG; gBtn.onclick=cloudGoogleSignIn; gBtn.setAttribute('aria-label','Связать с Google'); gBtn.title='Связать с Google';
-        } else {
-          gBtn.textContent='🚪'; gBtn.onclick=cloudSignOut; gBtn.setAttribute('aria-label','Выйти из Google'); gBtn.title='Выйти из Google';
+  // === Экономная синхронизация (один документ, хэш, адаптивная задержка) ===
+  let cloudUploadTimer=null;
+  function scheduleCloudUpload(){
+    if(!cloudUser || cloudUser.isAnonymous) return; // экономим — не пишем в облако в анонимном режиме
+    cloudSyncPending=true; updateCloudUI();
+    if(cloudUploadTimer) clearTimeout(cloudUploadTimer);
+    const now=Date.now();
+    const since = now - lastUploadAt;
+    // Чем дольше не было синка — тем быстрее следующий; иначе увеличиваем интервал
+    let delay = since > 120000 ? 1200 : since > 30000 ? 2500 : 4000;
+    cloudUploadTimer = setTimeout(()=>cloudUpload(), delay);
+  }
+  function cloudUpload(){
+    if(!cloudUser || cloudUser.isAnonymous){ cloudSyncPending=false; updateCloudUI(); return; }
+    if(!navigator.onLine){ // ждём online
+      window.addEventListener('online', ()=>scheduleCloudUpload(), { once:true });
+      return;
+    }
+    try {
+      const snapObj = snapshotLocal();
+      const str = JSON.stringify(snapObj);
+      const h = hashSnapshotStr(str);
+      if(h === lastUploadedHash){ cloudSyncPending=false; updateCloudUI(); return; }
+      const ref = docRef(); if(!ref){ cloudSyncPending=false; updateCloudUI(); return; }
+      ref.set({ snapshot: snapObj, hash:h, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:false })
+        .then(()=>{
+          lastUploadedHash=h; lastUploadAt=Date.now(); cloudRetry=0; cloudSyncPending=false; localStorage.setItem('cloudLastSync', String(Date.now())); maybeStoreHistory(); flashIndicator(); updateCloudUI(); })
+        .catch(err=>{
+          console.warn('Upload fail', err); cloudRetry++; const backoff=Math.min(30000, 1000*Math.pow(2, cloudRetry)); setTimeout(()=>scheduleCloudUpload(), backoff); });
+    } catch(e){ console.warn('cloudUpload error', e); cloudSyncPending=false; updateCloudUI(); }
+  }
+  function fetchRemoteMeta(){
+    if(!cloudUser || cloudUser.isAnonymous) return;
+    const ref = docRef(); if(!ref) return;
+    ref.get().then(doc=>{
+      if(doc.exists){
+        const d = doc.data();
+        if(d.updatedAt && d.hash){
+          const ts = d.updatedAt.toDate ? d.updatedAt.toDate() : new Date();
+          remoteSnapshotMeta={ updatedAt: ts, hash:d.hash };
+          // Если наш локальный lastUploadedHash не совпадает и удалёнка свежее — обозначим STALE
+          updateCloudUI();
         }
-        gBtn.disabled=false;
+      } else {
+        remoteSnapshotMeta=null; updateCloudUI();
       }
-      if(aBtn){ aBtn.disabled=true; }
-      [up,dn,mg].forEach(b=>b && (b.disabled=false));
-      let metaTxt='';
-      if(remoteSnapshotMeta?.updatedAt){ metaTxt+='Облако: '+fmtDate(remoteSnapshotMeta.updatedAt); }
-      if(lastSync){ metaTxt+=(metaTxt?', ':'')+'Локал. sync: '+fmtDate(lastSync); }
-      if(ls) ls.textContent=metaTxt;
+    }).catch(e=>console.warn('fetchRemoteMeta error', e));
+  }
+  function initialCloudSync(){
+    if(!cloudUser || cloudUser.isAnonymous){ return; }
+    const ref = docRef(); if(!ref) return;
+    ref.get().then(doc=>{
+      if(doc.exists){
+        const d=doc.data();
+        const ts = d.updatedAt?.toDate ? d.updatedAt.toDate() : new Date();
+        remoteSnapshotMeta={ updatedAt: ts, hash:d.hash};
+        // Решение: если удалёнка свежее локального lastSync или локальный пуст — берём облако
+        const localSyncTs = parseInt(localStorage.getItem('cloudLastSync')||'0');
+        if(!localSyncTs || (ts.getTime() > localSyncTs + 2000)){
+          if(d.snapshot){ applySnapshot(d.snapshot); }
+          lastUploadedHash = d.hash || null;
+          localStorage.setItem('cloudLastSync', String(Date.now()));
+        } else {
+          // Локал свежее → загрузим локальное в облако (создаём новую версию)
+          scheduleCloudUpload();
+        }
+      } else {
+        // Документа нет — создаём первый upload
+        scheduleCloudUpload();
+      }
+    }).catch(e=>console.warn('initialCloudSync error', e));
+  }
+  function cloudMerge(){ // простая стратегия: всегда берём облако
+    if(!cloudUser || cloudUser.isAnonymous) return;
+    const ref=docRef(); if(!ref) return;
+    ref.get().then(doc=>{
+      if(doc.exists){ const d=doc.data(); if(d.snapshot){ applySnapshot(d.snapshot); lastUploadedHash=d.hash||null; localStorage.setItem('cloudLastSync', String(Date.now())); updateCloudUI(); } }
+    });
+  }
+  function cloudIndicatorClick(ev){
+    if(!cloudUser){ cloudGoogleSignIn(); return; }
+    if(cloudUser.isAnonymous){ cloudGoogleSignIn(); return; }
+    // Если метка STALE → предложить подтянуть облако
+    const hint=document.getElementById('cloudHint');
+    if(hint && hint.textContent==='STALE'){
+      if(confirm('В облаке есть более свежая версия. Загрузить её (локальное будет перезаписано)?')){ cloudMerge(); }
+      else if(confirm('Отправить локальную версию в облако, перезаписав облачную?')){ scheduleCloudUpload(); }
+    } else if(hint && hint.textContent==='OK'){
+      // Принудительное сохранение
+      scheduleCloudUpload();
+    } else if(hint && hint.textContent==='OFF'){
+      cloudGoogleSignIn();
     }
   }
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ fetchRemoteMeta(); } });
+  window.addEventListener('online', ()=>{ if(cloudSyncPending) scheduleCloudUpload(); });
     // ==== Конец блока Firebase ====
     // Инициализация состояния из localStorage или пустой объект
     let state = {};
@@ -1442,57 +1489,56 @@
       const hint=document.getElementById('cloudHint');
       const ls=document.getElementById('cloudLastSync');
       const gBtn=document.getElementById('cloudGoogleBtn');
-      if(!indicator || !dot || !hint) return;
+      if(!indicator||!dot||!hint) return;
       const lastSyncTs=localStorage.getItem('cloudLastSync');
       const lastSync= lastSyncTs? new Date(parseInt(lastSyncTs)):null;
-      indicator.classList.remove('synced','warn','off');
+      const remoteMs = remoteSnapshotMeta?.updatedAt ? remoteSnapshotMeta.updatedAt.getTime() : 0;
+      const localMs = lastSync ? lastSync.getTime() : 0;
+      indicator.classList.remove('synced','warn','off','pending');
       dot.className='cloud-dot';
+      const sizeStr = currentSnapshotSizeKB();
       if(!cloudUser){
         indicator.classList.add('off');
         dot.classList.add('state-off');
         hint.textContent='OFF';
         if(ls) ls.textContent='';
-        if(gBtn){
-          gBtn.className='cloud-g-btn';
-          gBtn.innerHTML='\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>';
-          gBtn.title='Google вход';
-          gBtn.onclick=cloudGoogleSignIn;
-        }
+        if(gBtn){ gBtn.className='cloud-g-btn full'; gBtn.innerHTML='<span class="g-ic">'+googleSVGIcon()+'</span><span>Войти</span>'; gBtn.title='Войти через Google'; gBtn.onclick=cloudGoogleSignIn; }
       } else if(cloudUser.isAnonymous){
         indicator.classList.add('warn');
         dot.classList.add('state-warn');
         hint.textContent='ANON';
-        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)) : '';
-        if(gBtn){
-          gBtn.className='cloud-g-btn';
-          gBtn.innerHTML='\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>';
-          gBtn.title='Связать с Google';
-          gBtn.onclick=cloudGoogleSignIn;
-        }
+        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)+' · '+sizeStr+'KB') : '';
+        if(gBtn){ gBtn.className='cloud-g-btn full'; gBtn.innerHTML='<span class="g-ic">'+googleSVGIcon()+'</span><span>Связать</span>'; gBtn.title='Связать с Google'; gBtn.onclick=cloudGoogleSignIn; }
       } else {
-        indicator.classList.add('synced');
-        dot.classList.add('state-ok');
-        hint.textContent='OK';
-        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)) : '';
-        if(gBtn){
-          gBtn.className='cloud-g-btn signout';
-          gBtn.textContent='OUT';
-          gBtn.title='Выйти из Google';
-          gBtn.onclick=cloudSignOut;
+        // Google пользователь
+        if(cloudSyncPending){
+          indicator.classList.add('pending');
+          dot.classList.add('state-pending','pulse');
+          hint.textContent='PEND';
+        } else if(remoteMs > localMs + 2500){
+          indicator.classList.add('warn');
+          dot.classList.add('state-warn');
+          hint.textContent='STALE';
+        } else {
+          indicator.classList.add('synced');
+          dot.classList.add('state-ok');
+          hint.textContent='OK';
         }
+        if(ls) ls.textContent= lastSync? ('синк '+fmtDate(lastSync)+' · '+sizeStr+'KB') : '';
+        if(gBtn){ gBtn.className='cloud-g-btn signout full'; gBtn.innerHTML='<span class="g-ic">'+googleSVGIcon()+'</span><span>Выйти</span>'; gBtn.title='Выйти из Google'; gBtn.onclick=cloudSignOut; }
       }
+      // Обновляем title (tooltips)
+      const map={OFF:'Не подключено', ANON:'Аноним (не синхр. между устройствами)', PEND:'Сохранение…', STALE:'В облаке свежее (обновить/слиять)', OK:'Все синхронизировано'};
+      indicator.title='Облако: '+(map[hint.textContent]||hint.textContent);
     }
+    function currentSnapshotSizeKB(){ try { return (JSON.stringify(snapshotLocal()).length/1024).toFixed(1); } catch(_){ return '?'; } }
+    function googleSVGIcon(){ return '\n<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">\n  <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>\n  <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>\n  <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>\n  <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>\n</svg>'; }
     function bytesToKB(b){ return (b/1024).toFixed(1)+' KB'; }
     function escapeHTML(str){ return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]||c)); }
     function renderUserLinks(day){
       const ul = document.querySelector(`#userLinks${day}`); if(!ul) return;
       const list = (attachmentsState[day]?.links)||[];
   ul.innerHTML = list.map((l,i)=>`<li><span class="inline-badge">LINK</span><a href="${l.url}" target="_blank">${l.title}</a><button class="x-btn" onclick="deleteLink(${day},${i})" title="Удалить">✕</button></li>`).join('');
-    }
-    function renderUserFiles(day){
-      const ul = document.querySelector(`#userFiles${day}`); if(!ul) return;
-      const list = (attachmentsState[day]?.files)||[];
-  ul.innerHTML = list.map((f,i)=>`<li><span class="inline-badge">FILE</span><a download="${f.name}" href="${f.data}">${f.name}</a><span class="file-size">${bytesToKB(f.size)}</span><button class="x-btn" onclick="deleteFile(${day},${i})" title="Удалить">✕</button></li>`).join('');
     }
     // --- Подзадачи дней ---
     function generateTemplateSubtasks(dayObj){
@@ -1616,12 +1662,12 @@
     function updateMaterialBadge(day){
       const btn = document.getElementById('mtgl'+day); if(!btn) return;
       const linksCount = (attachmentsState[day]?.links?.length)||0;
-      const filesCount = (attachmentsState[day]?.files?.length)||0;
+  const filesCount = 0; // загрузка файлов отключена
       const noteActive = Array.isArray(notesState[day]) ? notesState[day].length>0 : (typeof notesState[day]==='string' && notesState[day].trim().length>0);
       const isOpen = !!extraOpen[day];
       btn.innerHTML = `<span class="arrow">▶</span>${isOpen? ' Скрыть материалы':' Материалы'}<span class="mat-badges">`
         + (linksCount? `<span class=\"mat-badge link\" title=\"Пользовательских ссылок\">🔗 ${linksCount}</span>`:'')
-        + (filesCount? `<span class=\"mat-badge file\" title=\"Загруженных файлов\">📁 ${filesCount}</span>`:'')
+  // файловый бейдж удалён (экономия)
         + (noteActive? `<span class=\"mat-badge note\" title=\"Заметок\">📝 ${Array.isArray(notesState[day])? notesState[day].length:1}</span>`:'')
         + `</span>`;
     }
@@ -1690,6 +1736,12 @@
     function saveOpenState() {
       localStorage.setItem('frontendOpenState', JSON.stringify(openState));
     }
+
+    // --- Состояние открытия отдельных дней ---
+    let dayOpen = {};
+    try { dayOpen = JSON.parse(localStorage.getItem('frontendDayOpen')||'{}')||{}; } catch(e){ dayOpen={}; }
+    function saveDayOpen(){ localStorage.setItem('frontendDayOpen', JSON.stringify(dayOpen)); }
+    function toggleDay(day){ dayOpen[day] = !dayOpen[day]; saveDayOpen(); const body=document.getElementById('dayBody'+day); const hdr=document.getElementById('dayHeader'+day); if(body){ body.classList.toggle('collapsed', !dayOpen[day]); } if(hdr){ hdr.classList.toggle('open', !!dayOpen[day]); } }
 
     function buildExtraLinks(day) {
       const base = [...(day.links || [])];
@@ -1770,42 +1822,6 @@
     }
 
     // --- Экспорт / импорт ---
-    function exportData(){
-      const payload = {
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme')
-      };
-      const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'frontend-tracker-backup.json';
-      document.body.appendChild(a); a.click(); a.remove();
-    }
-    function handleImport(input){
-      const file = input.files[0]; if(!file) return; const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const data = JSON.parse(e.target.result);
-          if(!data || typeof data !== 'object') throw new Error('Некорректный формат');
-          if(data.state) state = data.state;
-          if(data.notesState) notesState = data.notesState;
-          if(data.attachmentsState) attachmentsState = data.attachmentsState;
-            if(data.subtasksState) subtasksState = data.subtasksState;
-          if(data.extraOpen) extraOpen = data.extraOpen;
-          if(data.openState) openState = data.openState;
-          if(data.sectionOpen) sectionOpen = data.sectionOpen;
-          if(data.theme) { document.body.setAttribute('data-theme', data.theme); localStorage.setItem('theme', data.theme); }
-          save(); saveNotes(); saveAttachments(); saveSubtasks(); saveExtraOpen(); saveOpenState(); saveSectionOpen();
-          updateStats(); render();
-          alert('Импорт завершён успешно');
-        } catch(err){ alert('Ошибка импорта: '+err.message); }
-        input.value='';
-      };
-      reader.readAsText(file);
-    }
-
-    // --- Оценка использования localStorage ---
     function estimateStorageUsage(){
       let total = 0; for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); const v = localStorage.getItem(k); total += (k.length + v.length); }
       // localStorage обычно ~5MB per origin. Возьмём 5*1024*1024 ≈ 5242880 bytes.
@@ -1832,32 +1848,37 @@
               <ul class="mo-tasks">${monthTasks.map(t=>`<li>${t}</li>`).join('')}</ul>
             </div>
             ${month.weeks.map(week => {
-          const weekProgress = `${week.days.filter(d => state[d.day]).length}/${week.days.length}`;
-          const weekTasks = buildWeekTasks(week);
+              const weekDoneCount = week.days.filter(d => state[d.day]).length;
+              const weekProgress = `${weekDoneCount}/${week.days.length}`;
+              const weekAllDone = weekDoneCount === week.days.length;
+              const weekTasks = buildWeekTasks(week);
           return `
               <div class="week">
-                <div class="week-header" onclick="toggleWeek(${week.week})">
-                  <span>${week.title}</span>
-                  <span>${weekProgress}</span>
-                </div>
-                <div class="week-objectives">
-                  <div class="wg-goal"><strong>Цель недели:</strong> ${weekDescriptions[week.week]||''}</div>
-                  <ul class="wg-tasks">${weekTasks.map(t=>`<li>${t}</li>`).join('')}</ul>
-                </div>
-                <div id="week${week.week}" class="days ${openState.weeks.includes(week.week) ? '' : 'collapsed'}">
+                    <div class="week-header ${weekAllDone? 'week-done':''}" onclick="toggleWeek(${week.week})" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){toggleWeek(${week.week});}">
+                      <div style="display:flex; align-items:center; gap:4px; flex:1;">
+                        <input type="checkbox" class="week-cb" ${weekAllDone? 'checked':''} aria-label="Отметить всю неделю" onclick="event.stopPropagation();" onchange="toggleWeekCheckbox(event, ${week.week})">
+                        <span class="week-title-text">${week.title}</span>
+                      </div>
+                      <span>${weekProgress}</span>
+                    </div>
+                    <div id="week${week.week}" class="days ${openState.weeks.includes(week.week) ? '' : 'collapsed'}">
+                      <div class="week-objectives" style="margin:0 24px 18px 24px; border-radius:14px;">
+                        <div class="wg-goal"><strong>Цель недели:</strong> ${weekDescriptions[week.week]||''}</div>
+                        <ul class="wg-tasks">${weekTasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+                      </div>
                   ${week.days.map(day => {
             const effectiveLinks = buildExtraLinks(day);
             const dayGoal = buildDayGoal(day);
             const dayTasks = buildDayTasks(day);
             return `
                     <div class="day ${state[day.day] ? 'done' : ''}" data-day="${day.day}">
-                      <div class="day-header">
-                        <input type="checkbox" ${state[day.day] ? 'checked' : ''} onchange="toggle(${day.day})">
+                      <div class="day-header ${dayOpen[day.day] ? 'open':''}" id="dayHeader${day.day}" onclick="toggleDay(${day.day})" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); toggleDay(${day.day});}">
+                        <input type="checkbox" ${state[day.day] ? 'checked' : ''} onchange="event.stopPropagation(); toggle(${day.day})" onclick="event.stopPropagation();">
+                        <div class="day-title">День ${day.day}: ${day.title}</div>
+                        <span class="day-time" style="margin-left:auto;">${day.time}</span>
+                      </div>
+                      <div class="day-body ${dayOpen[day.day] ? '' : 'collapsed'}" id="dayBody${day.day}">
                         <div class="day-info">
-                          <div class="day-title">
-                            День ${day.day}: ${day.title}
-                            <span class="day-time">${day.time}</span>
-                          </div>
                           <div class="day-goal-line"><strong>Цель:</strong> ${dayGoal}</div>
                           ${dayTasks.length ? `<ul class="day-tasks-list">${dayTasks.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
                           <div class="day-task">${day.task}</div>
@@ -1897,15 +1918,13 @@
                                 </div>
                                 <ul class="user-links" id="userLinks${day.day}"></ul>
                                 <div class="attach-files file-wrapper">
-                                  <label class="file-btn" for="fileInput${day.day}">📁 Выбрать файлы</label>
-                                  <input id="fileInput${day.day}" type="file" multiple onchange="handleFileUpload(${day.day}, this)" title="До 200KB на файл">
-                                  <span class="attach-hint">Лимит 200KB/файл (хранится в localStorage).</span>
+                                  <span class="attach-hint">Файловые загрузки отключены (экономия памяти). Используй ссылки.</span>
                                 </div>
-                                <ul class="user-files" id="userFiles${day.day}"></ul>
+                                <ul class="user-files" id="userFiles${day.day}" style="display:none"></ul>
                               </div>
                             </div>
                           </div>
-                          <div id="materialsToggle${day.day}">
+                          <div id="materialsToggle${day.day}" style="margin-top:10px;">
                             <button id="mtgl${day.day}" class="materials-toggle ${extraOpen[day.day] ? 'open':''}" type="button" onclick="toggleExtra(${day.day})"><span class="arrow">▶</span>${extraOpen[day.day] ? ' Скрыть материалы' : ' Материалы'}<span class="mat-badges"></span></button>
                           </div>
                         </div>
@@ -1922,7 +1941,7 @@
       document.getElementById('content').innerHTML = html;
       applyFilter();
       // После рендера восстановим пользовательские ссылки/файлы и состояния материалов
-  Object.keys(attachmentsState).forEach(day => { renderUserLinks(day); renderUserFiles(day); });
+  Object.keys(attachmentsState).forEach(day => { renderUserLinks(day); });
   // Инициализация и рендер подзадач (генерируются один раз)
   plan.forEach(m => m.weeks.forEach(w => w.days.forEach(d => { ensureSubtasks(d); renderSubtasks(d.day); })));
   // Обновим бейджи материалов после восстановления списков
@@ -1995,6 +2014,18 @@
       render();
     }
 
+    function toggleWeekCheckbox(ev, weekNum){
+      const weekObj = plan.flatMap(m=>m.weeks).find(w=>w.week===weekNum);
+      if(!weekObj) return;
+      const shouldCheck = ev.target.checked; // если включили — отмечаем все дни; если сняли — снимаем
+      weekObj.days.forEach(d => { state[d.day] = !!shouldCheck; });
+      // Сохраним раскрытость недели до рендера, чтобы прогресс-бар сразу пересчитал позицию
+      if(!openState.weeks.includes(weekNum)) { openState.weeks.push(weekNum); saveOpenState(); }
+      save(); // save() сам вызовет scheduleCloudUpload
+      updateStats();
+      render();
+    }
+
     function filter(type) {
       currentFilter = type;
       document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
@@ -2046,6 +2077,10 @@
       // loadFirebaseCompat уже установит onAuthStateChanged и восстановит пользователя из persistence
       if(typeof loadFirebaseCompat === 'function') loadFirebaseCompat();
     }
+    // Периодическое сохранение в локальную историю (каждые 10 минут)
+    setInterval(()=>{ try { maybeStoreHistory(); } catch(_){ } }, 10*60*1000);
+    // Перед закрытием вкладки — тоже сохраняем последнюю версию
+    window.addEventListener('beforeunload', ()=>{ try { maybeStoreHistory(); } catch(_){ } });
     updateStats();
     render();
     if(typeof updateCloudUI === 'function') updateCloudUI();
