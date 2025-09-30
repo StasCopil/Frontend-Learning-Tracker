@@ -641,6 +641,21 @@
   .storage-usage { background: var(--bg-tertiary); border:1px solid var(--border-color); padding:4px 8px; border-radius:10px; font-size:10px; font-weight:600; color: var(--text-secondary); display:flex; gap:6px; align-items:center; }
   .storage-usage-bar { flex:1; height:6px; background: var(--bg-card); border-radius:4px; overflow:hidden; position:relative; }
   .storage-usage-bar span { position:absolute; inset:0; width:0; background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6); transition: width .6s ease; }
+  /* Облачная синхронизация */
+  .cloud-panel { padding: 12px 32px 0; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .cloud-badge { font-size:11px; font-weight:600; background: var(--bg-tertiary); padding:6px 10px; border:1px solid var(--border-color); border-radius:14px; display:flex; align-items:center; gap:6px; }
+  .cloud-btn { background: var(--accent-gradient-faded); border:1px solid var(--border-color); color: var(--text-primary); font-size:11px; font-weight:600; padding:8px 12px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:4px; transition: var(--transition); }
+  .cloud-btn:hover { background: var(--gradient-primary); color:#fff; }
+  .cloud-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .cloud-status-ok { color:#34d399; }
+  .cloud-status-err { color:#f87171; }
+  .cloud-status-warn { color:#fbbf24; }
+  .cloud-last { font-size:10px; color: var(--text-muted); margin-left:auto; }
+  .cloud-warn { flex:1 1 100%; background: rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.4); color:#fca5a5; padding:6px 10px; border-radius:10px; font-size:11px; font-weight:600; }
+  /* Google sign-in button compact */
+  .cloud-btn-g { width:42px; padding:8px !important; display:flex; align-items:center; justify-content:center; }
+  .cloud-btn-g .g-icon { width:20px; height:20px; display:block; }
+  .cloud-btn-g svg { width:100%; height:100%; display:block; }
 
     /* Плавное раскрытие внутренних секций */
     .section-body { overflow: hidden; transition: max-height .45s ease; }
@@ -707,6 +722,25 @@
       <button class="btn-reset" onclick="reset()">Сбросить прогресс</button>
     </div>
 
+    <div class="cloud-panel">
+      <div class="cloud-badge" id="cloudStatus">☁️ Облако: оффлайн</div>
+      <button class="cloud-btn cloud-btn-g" id="cloudGoogleBtn" type="button" onclick="cloudGoogleSignIn()" aria-label="Google вход" title="Google вход">
+        <span class="g-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/>
+            <path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/>
+            <path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/>
+            <path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/>
+          </svg>
+        </span>
+      </button>
+      <button class="cloud-btn" id="cloudAnonBtn" type="button" onclick="cloudAnonSignIn()">👤 Аноним</button>
+      <button class="cloud-btn" id="cloudUploadBtn" type="button" onclick="cloudUpload()" disabled>⬆ Сохранить</button>
+      <button class="cloud-btn" id="cloudDownloadBtn" type="button" onclick="cloudDownload()" disabled>⬇ Загрузить</button>
+      <button class="cloud-btn" id="cloudMergeBtn" type="button" onclick="cloudMerge()" disabled>🔀 Слить</button>
+      <div class="cloud-last" id="cloudLastSync"></div>
+    </div>
+
     <div style="padding:0 32px 8px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
       <div class="storage-usage" id="storageUsage">
         <span>Хранилище</span>
@@ -732,6 +766,113 @@
   </div>
 
   <script>
+    /* === Firebase Cloud Sync (анонимная) === */
+    // === Реальная конфигурация Firebase (заменена) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyCo560tNWLd4OqoTMc8g0DgxvsfFldMNWU",
+      authDomain: "tracker-397f9.firebaseapp.com",
+      projectId: "tracker-397f9",
+      storageBucket: "tracker-397f9.appspot.com", // исправлено: используем *.appspot.com
+      messagingSenderId: "578524159971",
+      appId: "1:578524159971:web:7fbb385e5063ebac25cad6",
+      measurementId: "G-2PD3FS0WCS" // не используется напрямую (analytics не подключаем)
+    };
+    // (Проверка плейсхолдеров удалена: конфигурация заполнена)
+    let firebaseLoaded=false, auth=null, db=null, cloudUser=null, remoteSnapshotMeta=null;
+    function loadFirebaseCompat(){
+      if(firebaseLoaded) return Promise.resolve();
+      const scripts=[
+        'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+        'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+        'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js'
+      ];
+      return scripts.reduce((p,src)=>p.then(()=>new Promise((res,rej)=>{const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s);})),Promise.resolve())
+        .then(()=>{ firebase.initializeApp(firebaseConfig); firebaseLoaded=true; initCloud(); })
+        .catch(e=>console.warn('Firebase load error',e));
+    }
+    function initCloud(){
+      try { auth=firebase.auth(); db=firebase.firestore(); auth.onAuthStateChanged(u=>{cloudUser=u; updateCloudUI(); if(u) fetchRemoteMeta();}); } catch(e){ console.warn('Cloud init error',e); }
+    }
+    // ==== Аутентификация (Google + аноним) ====
+    function cloudAnonSignIn(){ loadFirebaseCompat().then(()=>{ if(!auth) return; if(cloudUser){ alert('Уже вошли'); return;} auth.signInAnonymously().catch(e=>alert('Ошибка входа: '+e.message)); }); }
+    function cloudGoogleSignIn(){
+      loadFirebaseCompat().then(()=>{
+        if(!auth) return;
+        const provider = new firebase.auth.GoogleAuthProvider();
+        if(auth.currentUser && auth.currentUser.isAnonymous){
+          auth.currentUser.linkWithPopup(provider)
+            .then(()=>{ updateCloudUI(); initialCloudSync(); })
+            .catch(err=>{
+              if(err.code === 'auth/credential-already-in-use'){
+                auth.signInWithPopup(provider).then(()=>{ cloudMerge(); }).catch(e=>alert('Ошибка входа: '+e.message));
+              } else alert('Ошибка связывания: '+err.message);
+            });
+        } else {
+          auth.signInWithPopup(provider)
+            .then(()=>{ initialCloudSync(); })
+            .catch(e=>{
+              if(e?.code === 'auth/unauthorized-domain'){
+                console.warn('[Firebase] Unauthorized domain. Требуется добавить текущий хост в Firebase → Authentication → Settings → Authorized domains.');
+                alert('Домен не авторизован для OAuth.\n\nДобавь: "'+location.hostname+'" в Firebase Console → Authentication → Settings → Authorized domains.');
+              } else {
+                alert('Ошибка входа: '+e.message);
+              }
+            });
+        }
+      });
+    }
+    function cloudSignIn(){ cloudGoogleSignIn(); }
+    function cloudSignOut(){ if(auth && cloudUser) auth.signOut(); }
+    function snapshotLocal(){ return { version:2, exportedAt:new Date().toISOString(), state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme') }; }
+    function applySnapshot(obj){ if(!obj) return; if(obj.state) state=obj.state; if(obj.notesState) notesState=obj.notesState; if(obj.attachmentsState) attachmentsState=obj.attachmentsState; if(obj.subtasksState) subtasksState=obj.subtasksState; if(obj.extraOpen) extraOpen=obj.extraOpen; if(obj.openState) openState=obj.openState; if(obj.sectionOpen) sectionOpen=obj.sectionOpen; if(obj.theme){ document.body.setAttribute('data-theme', obj.theme); localStorage.setItem('theme', obj.theme);} save(); saveNotes(); saveAttachments(); saveSubtasks(); saveExtraOpen(); saveOpenState(); saveSectionOpen(); updateStats(); render(); }
+    function docRef(){ if(!cloudUser) return null; return db.collection('users').doc(cloudUser.uid); }
+  let cloudUploadQueued=null;
+  function scheduleCloudUpload(){ if(!cloudUser || cloudUser.isAnonymous) return; if(cloudUploadQueued) clearTimeout(cloudUploadQueued); cloudUploadQueued = setTimeout(()=>cloudUpload(),1500); }
+  function cloudUpload(){ if(!cloudUser){ return;} const ref=docRef(); if(!ref) return; const data=snapshotLocal(); ref.set({data, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}).then(()=>{ localStorage.setItem('cloudLastSync', Date.now().toString()); remoteSnapshotMeta={updatedAt:new Date()}; updateCloudUI(); }).catch(e=>console.warn('Ошибка сохранения: '+e.message)); }
+  function cloudDownload(){ if(!cloudUser){ alert('Сначала войдите'); return;} const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(!snap.exists){ alert('В облаке нет данных'); return;} const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; applySnapshot(payload.data); localStorage.setItem('cloudLastSync', Date.now().toString()); updateCloudUI(); }).catch(e=>alert('Ошибка загрузки: '+e.message)); }
+  function cloudMerge(){ if(!cloudUser){ alert('Войдите'); return;} const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(!snap.exists){ cloudUpload(); return;} const remote=snap.data()?.data||{}; const merged={...remote, ...snapshotLocal()}; applySnapshot(merged); cloudUpload(); }).catch(e=>alert('Ошибка merge: '+e.message)); }
+  function initialCloudSync(){ const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(snap.exists){ const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; const remoteData=payload.data; const localTs=parseInt(localStorage.getItem('cloudLastSync')||'0'); const remoteTs=remoteSnapshotMeta.updatedAt.getTime(); if(remoteTs>localTs){ applySnapshot(remoteData); } else if(localTs && localTs>remoteTs){ cloudUpload(); } updateCloudUI(); } else { cloudUpload(); } }); }
+    function fetchRemoteMeta(){ const ref=docRef(); if(!ref) return; ref.get().then(snap=>{ if(snap.exists){ const payload=snap.data(); remoteSnapshotMeta={updatedAt: payload.updatedAt?.toDate?.()|| new Date()}; updateCloudUI(); } }); }
+    function fmtDate(d){ if(!d) return '-'; return d.toLocaleString(); }
+  function updateCloudUI(){
+    const st=document.getElementById('cloudStatus');
+    const gBtn=document.getElementById('cloudGoogleBtn');
+    const aBtn=document.getElementById('cloudAnonBtn');
+    const up=document.getElementById('cloudUploadBtn');
+    const dn=document.getElementById('cloudDownloadBtn');
+    const mg=document.getElementById('cloudMergeBtn');
+    const ls=document.getElementById('cloudLastSync');
+    const lastSyncTs=localStorage.getItem('cloudLastSync');
+    const lastSync= lastSyncTs? new Date(parseInt(lastSyncTs)):null;
+    if(!st) return;
+    const googleSVG = '<span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M12 10.8v3.84h5.42c-.24 1.26-.98 2.33-2.08 3.05l3.36 2.61c1.96-1.81 3.09-4.47 3.09-7.66 0-.74-.07-1.45-.2-2.14H12z"/><path fill="#34A853" d="M6.56 14.32 5.8 14.9l-2.68 2.06C5.08 20.6 8.29 22.5 12 22.5c2.7 0 4.96-.9 6.61-2.45l-3.36-2.61c-.9.6-2.05.96-3.25.96-2.51 0-4.65-1.69-5.44-3.97z"/><path fill="#4A90E2" d="M5.8 9.1 3.12 7.04C2.41 8.37 2 9.9 2 11.5s.41 3.13 1.12 4.46l3.44-2.66c-.2-.6-.31-1.25-.31-1.9 0-.66.11-1.3.31-1.9z"/><path fill="#FBBC05" d="M12 6.5c1.47 0 2.78.51 3.81 1.5l2.85-2.85C16.95 3.76 14.7 2.9 12 2.9 8.29 2.9 5.08 4.8 3.12 7.04L5.8 9.1c.79-2.28 2.93-3.97 5.44-3.97z"/></svg></span>';
+    if(!cloudUser){
+      st.textContent='☁️ Облако: оффлайн';
+      st.className='cloud-badge cloud-status-err';
+      if(gBtn){ gBtn.disabled=false; gBtn.innerHTML=googleSVG; gBtn.onclick=cloudGoogleSignIn; gBtn.setAttribute('aria-label','Google вход'); gBtn.title='Google вход'; }
+      if(aBtn){ aBtn.disabled=false; aBtn.textContent='👤 Аноним'; aBtn.onclick=cloudAnonSignIn; }
+      [up,dn,mg].forEach(b=>b && (b.disabled=true)); if(ls) ls.textContent='';
+    } else {
+      const anon=cloudUser.isAnonymous;
+      st.textContent= anon? '☁️ Облако: аноним' : '☁️ Облако: Google';
+      st.className='cloud-badge ' + (anon? 'cloud-status-warn':'cloud-status-ok');
+      if(gBtn){
+        if(anon){
+          gBtn.innerHTML=googleSVG; gBtn.onclick=cloudGoogleSignIn; gBtn.setAttribute('aria-label','Связать с Google'); gBtn.title='Связать с Google';
+        } else {
+          gBtn.textContent='🚪'; gBtn.onclick=cloudSignOut; gBtn.setAttribute('aria-label','Выйти из Google'); gBtn.title='Выйти из Google';
+        }
+        gBtn.disabled=false;
+      }
+      if(aBtn){ aBtn.disabled=true; }
+      [up,dn,mg].forEach(b=>b && (b.disabled=false));
+      let metaTxt='';
+      if(remoteSnapshotMeta?.updatedAt){ metaTxt+='Облако: '+fmtDate(remoteSnapshotMeta.updatedAt); }
+      if(lastSync){ metaTxt+=(metaTxt?', ':'')+'Локал. sync: '+fmtDate(lastSync); }
+      if(ls) ls.textContent=metaTxt;
+    }
+  }
+    // ==== Конец блока Firebase ====
     // Инициализация состояния из localStorage или пустой объект
     let state = {};
     if (localStorage.getItem('frontendPlan')) {
@@ -1236,9 +1377,9 @@
     else { btn.classList.remove('open'); body.classList.add('collapsed'); }
   }
 
-    function saveNotes(){ localStorage.setItem('frontendNotes', JSON.stringify(notesState)); }
-  function saveAttachments(){ localStorage.setItem('frontendAttachments', JSON.stringify(attachmentsState)); }
-  function saveSubtasks(){ localStorage.setItem('frontendSubtasks', JSON.stringify(subtasksState)); }
+    function saveNotes(){ localStorage.setItem('frontendNotes', JSON.stringify(notesState)); scheduleCloudUpload(); }
+  function saveAttachments(){ localStorage.setItem('frontendAttachments', JSON.stringify(attachmentsState)); scheduleCloudUpload(); }
+  function saveSubtasks(){ localStorage.setItem('frontendSubtasks', JSON.stringify(subtasksState)); scheduleCloudUpload(); }
     // Миграция: если значение было строкой — оборачиваем в массив заметок
     function migrateNotes(){
       Object.keys(notesState).forEach(k => {
@@ -1473,9 +1614,7 @@
       });
     }
 
-    function save() {
-      localStorage.setItem('frontendPlan', JSON.stringify(state));
-    }
+    function save(){ localStorage.setItem('frontendPlan', JSON.stringify(state)); scheduleCloudUpload(); }
 
     function toggle(day) {
       state[day] = !state[day];
@@ -1864,6 +2003,7 @@
 
     updateStats();
     render();
+    if(typeof updateCloudUI === 'function') updateCloudUI();
   </script>
 </body>
 
