@@ -137,6 +137,19 @@
       transition: all var(--transition-slow);
     }
 
+    /* Theme + component smooth transitions */
+    body, .container, .month, .day, .week, .cat-card, .cloud-indicator, .cloud-g-btn, .cloud-btn, .cloud-mini-btn {
+      transition: background .55s ease, color .45s ease, border-color .5s ease, box-shadow .6s ease, transform .45s cubic-bezier(.4,0,.2,1);
+    }
+    body.theme-switching::after { content:""; position:fixed; inset:0; pointer-events:none; background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.15), rgba(0,0,0,.4)); animation: themeFade 0.6s ease; mix-blend-mode:overlay; }
+    @keyframes themeFade { from { opacity:0 } to { opacity:1 } }
+    @keyframes scaleInSoft { 0%{ transform:scale(.96) translateY(6px); opacity:0 } 100%{ transform:scale(1) translateY(0); opacity:1 } }
+    @keyframes slideDown { 0%{ max-height:0; opacity:0 } 100%{ max-height:1200px; opacity:1 } }
+    @keyframes pulseGlow { 0%,100%{ box-shadow:0 0 0 0 rgba(123,91,255,0.0) } 50%{ box-shadow:0 0 0 8px rgba(123,91,255,0.15) } }
+    .anim-scale-in { animation: scaleInSoft .5s cubic-bezier(.4,0,.2,1); }
+    .anim-slide-down { animation: slideDown .6s cubic-bezier(.4,0,.2,1); overflow:hidden; }
+    .anim-pulse-glow { animation: pulseGlow 2.4s ease-in-out infinite; }
+
     /* === PREMIUM SCROLLBAR === */
     ::-webkit-scrollbar {
       width: 8px;
@@ -332,7 +345,7 @@
     .progress-fill {
       height: 100%;
       background: var(--gradient-primary);
-      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width .45s cubic-bezier(.4,0,.2,1), filter .6s ease;
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -343,6 +356,10 @@
       position: relative;
       overflow: hidden;
     }
+
+    .progress-fill.pulse-boost { filter: brightness(1.15) saturate(1.15); }
+    .progress-fill.pulse-boost::after { content:""; position:absolute; inset:0; background:radial-gradient(circle at 60% 50%, rgba(255,255,255,.35), transparent 70%); opacity:.0; animation: pfPulse .9s ease forwards; pointer-events:none; }
+    @keyframes pfPulse { 0%{ opacity:.8; transform:scale(.9);} 60%{opacity:.15; transform:scale(1.15);} 100%{opacity:0; transform:scale(1.25);} }
 
     .progress-fill::before {
       content: '';
@@ -1296,7 +1313,11 @@
     }
 
     /* Плавающая панель быстрых действий */
-    .quick-panel { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 200; }
+    .quick-panel { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 200;
+      opacity:0; pointer-events:none; transform: translateY(14px) scale(.96);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.4,0,.2,1);
+      will-change: opacity, transform; }
+    .quick-panel.visible { opacity:1; pointer-events:auto; transform: translateY(0) scale(1); }
     .qp-btn { background: var(--accent-gradient-faded); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.15); color: var(--text-primary); font-size:12px; font-weight:600; padding:10px 16px; border-radius: 18px; cursor:pointer; display:flex; align-items:center; gap:6px; transition: var(--transition); }
     .qp-btn:hover { background: var(--gradient-primary); color:#fff; box-shadow:0 8px 24px var(--glow); }
     .qp-btn:focus-visible { outline:none; box-shadow: var(--focus-ring); }
@@ -1725,44 +1746,6 @@
               { day: 12, title: "Адаптивность", time: "2 ч", task: "@media, относительные единицы, mobile-first.", links: ["Responsive MDN||https://developer.mozilla.org/ru/docs/Learn/CSS/CSS_layout/Responsive_Design"] },
               { day: 13, title: "Проект: Резюме", time: "4-5 ч", task: "Одностраничное CV c адаптивностью.", links: [] },
               { day: 14, title: "Шлифовка резюме", time: "4-5 ч", task: "Якоря, плавный скролл, улучшение типографики.", links: [] }
-            ]
-          },
-          {
-            week: 3, title: "Неделя 3 — Продвинутый CSS", days: [
-              { day: 15, title: "Flexbox углубление", time: "2 ч", task: "Выравнивание, вложенные flex-структуры.", links: [] },
-              { day: 16, title: "CSS Grid", time: "2 ч", task: "grid-template, fr, auto-fit.", links: ["Grid Guide||https://css-tricks.com/snippets/css/complete-guide-grid/"] },
-              { day: 17, title: "Псевдоклассы/элементы", time: "2 ч", task: ":hover/:focus/::before/::after эффекты.", links: [] },
-              { day: 18, title: "Sass/SCSS", time: "2 ч", task: "Переменные, вложенность, partials.", links: ["Sass Guide||https://sass-lang.com/guide"] },
-              { day: 19, title: "Валидация форм", time: "2 ч", task: ":invalid, required, стили ошибок.", links: [] },
-              { day: 20, title: "Проект: Лендинг", time: "4-5 ч", task: "Лендинг с формой и сетками.", links: [] },
-              { day: 21, title: "Оптимизация CSS", time: "4-5 ч", task: "Структура SCSS, переменные, рефакторинг.", links: [] }
-            ]
-          },
-          {
-            week: 4, title: "Неделя 4 — Git, инструменты, среда", days: [
-              { day: 22, title: "Git ветки", time: "2 ч", task: "branch/merge, fast-forward.", links: [] },
-              { day: 23, title: "Pull Requests", time: "2 ч", task: "Fork/PR/review в GitHub.", links: [] },
-              { day: 24, title: "CLI основы", time: "2 ч", task: "Навигация, создание файлов, права.", links: [] },
-              { day: 25, title: "Node & npm", time: "2 ч", task: "package.json, scripts, semver.", links: ["Node.js||https://nodejs.org/ru/"] },
-              { day: 26, title: "npm проект", time: "2 ч", task: "devDeps vs deps, обновления.", links: [] },
-              { day: 27, title: "VS Code + ESLint + Prettier", time: "4-5 ч", task: "Настройка форматирования и линтинга.", links: ["Prettier||https://prettier.io/"] },
-              { day: 28, title: "Проект: Workflow", time: "4-5 ч", task: "Рабочий процесс с ветками и PR.", links: [] }
-            ]
-          }
-        ]
-      },
-      // Месяц 2
-      {
-        month: 2, title: "Месяц 2. Основы JavaScript", weeks: [
-          {
-            week: 5, title: "Неделя 5 — Введение в JS", days: [
-              { day: 29, title: "Что такое JavaScript", time: "2 ч", task: "Роль JS в браузере, первые выражения.", links: ["MDN JS First Steps||https://developer.mozilla.org/ru/docs/Learn/JavaScript/First_steps"] },
-              { day: 30, title: "Переменные и типы", time: "2 ч", task: "let/const, примитивы, typeof.", links: [] },
-              { day: 31, title: "Условия и циклы", time: "2 ч", task: "if/switch/for/while игра 'Угадай число'.", links: [] },
-              { day: 32, title: "Функции", time: "2 ч", task: "Параметры, возврат, стрелочные функции.", links: [] },
-              { day: 33, title: "Строки и массивы", time: "2 ч", task: "Методы map/filter, практика.", links: [] },
-              { day: 34, title: "Проект: To-Do (ч1)", time: "4-5 ч", task: "Добавление/удаление задач, массив в памяти.", links: [] },
-              { day: 35, title: "Рефакторинг To-Do", time: "4-5 ч", task: "Модули (логика в функциях), хранение в localStorage.", links: [] }
             ]
           },
           {
@@ -2433,8 +2416,11 @@
     function toggleTheme() {
       const currentTheme = document.body.getAttribute('data-theme') || 'dark';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.classList.add('theme-switching');
       document.body.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+      // очистка класса после анимации
+      setTimeout(()=>document.body.classList.remove('theme-switching'), 650);
     }
 
     // Слушаем изменения системной темы
@@ -2456,18 +2442,39 @@
       render();
     }
 
+    let lastPercentValue = 0;
     function updateStats() {
-      let done = Object.keys(state).filter(k => state[k]).length;
-      let left = 196 - done;
-      let pct = Math.round((done / 196) * 100);
+      const done = Object.keys(state).filter(k => state[k]).length;
+      const total = 196; // фиксированное общее кол-во
+      const left = total - done;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
+      // Мгновенное обновление чисел (никакой задержки визуально)
       document.getElementById('done').textContent = done;
       document.getElementById('left').textContent = left;
       document.getElementById('pct').textContent = pct + '%';
 
       const bar = document.getElementById('bar');
-      bar.style.width = pct + '%';
-      bar.textContent = pct + '%';
+      if (bar) {
+        const prev = lastPercentValue;
+        // Адаптивная длительность: маленькие шаги быстрее
+        bar.style.transitionDuration = Math.abs(pct - prev) < 3 ? '.30s' : '.45s';
+        bar.classList.remove('pulse-boost');
+        const targetWidth = pct + '%';
+        const shouldPulse = pct > prev && (pct - prev) >= 1;
+        requestAnimationFrame(() => {
+          if (!bar.style.width) bar.style.width = prev + '%';
+          requestAnimationFrame(() => {
+            bar.style.width = targetWidth;
+            bar.textContent = pct + '%';
+            if (shouldPulse) {
+              bar.classList.add('pulse-boost');
+              setTimeout(() => bar.classList.remove('pulse-boost'), 900);
+            }
+          });
+        });
+        lastPercentValue = pct;
+      }
     }
 
     // --- Состояние открытых списков ---
@@ -2665,7 +2672,7 @@
         const monthProgress = `${month.weeks.reduce((s, w) => s + w.days.filter(d => state[d.day]).length, 0)}/${month.weeks.reduce((s, w) => s + w.days.length, 0)}`;
         const monthTasks = buildMonthTasks(month);
         return `
-        <div class="month">
+  <div class="month anim-scale-in">
           <div class="month-header" onclick="toggleMonth(${month.month})">
             <span class="month-title">${month.title}</span>
             <span>${monthProgress}</span>
@@ -2681,7 +2688,7 @@
               const weekAllDone = weekDoneCount === week.days.length;
               const weekTasks = buildWeekTasks(week);
           return `
-              <div class="week">
+              <div class="week anim-slide-down">
                     <div class="week-header ${weekAllDone? 'week-done':''}" onclick="toggleWeek(${week.week})" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){toggleWeek(${week.week});}">
                       <div style="display:flex; align-items:center; gap:4px; flex:1;">
                         <input type="checkbox" class="week-cb" ${weekAllDone? 'checked':''} aria-label="Отметить всю неделю" onclick="event.stopPropagation();" onchange="toggleWeekCheckbox(event, ${week.week})">
@@ -2919,6 +2926,24 @@
     updateStats();
     render();
     if(typeof updateCloudUI === 'function') updateCloudUI();
+
+    // === Появление панели быстрых действий после прокрутки ===
+    (function initQuickPanelAppear(){
+      const qp = document.querySelector('.quick-panel');
+      if(!qp) return;
+      let shown = false;
+      const threshold = 320; // px
+      function onScroll(){
+        if(window.scrollY > threshold){
+          if(!shown){ qp.classList.add('visible'); shown=true; }
+        } else {
+          if(shown){ qp.classList.remove('visible'); shown=false; }
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive:true });
+      // если страница уже ниже порога при загрузке
+      requestAnimationFrame(onScroll);
+    })();
   </script>
 </body>
 
