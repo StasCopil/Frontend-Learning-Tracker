@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Личный интерактивный 8-месячный трекер обучения фронтенд разработке: цели, ресурсы, подзадачи, заметки, файлы и прогресс.">
+  <meta property="og:title" content="Трекер обучения фронтенду (8 месяцев)">
+  <meta property="og:description" content="Структурированный план на 196 дней с прогрессом, заметками и материалами.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
   <title>План обучения фронтенду - 8 месяцев</title>
   <style>
     :root {
@@ -20,6 +25,13 @@
       --shadow-color: rgba(0, 0, 0, 0.4);
       --glow: rgba(59, 130, 246, 0.3);
       --accent-color: #3b82f6;
+      --radius-xs: 6px;
+      --radius-s: 10px;
+      --radius-m: 16px;
+      --radius-l: 24px;
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+      --focus-ring: 0 0 0 3px rgba(139,92,246,.5);
+      --accent-gradient-faded: linear-gradient(135deg, rgba(59,130,246,.25), rgba(139,92,246,.25));
     }
 
     @media (prefers-color-scheme: light) {
@@ -171,6 +183,15 @@
       background-clip: text;
       position: relative;
     }
+    /* Категорийная сводка */
+    .categories-summary { display:grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap:16px; padding:0 32px 32px; }
+    .cat-card { background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:16px; padding:14px 16px 18px; position:relative; overflow:hidden; display:flex; flex-direction:column; gap:8px; }
+    .cat-card h4 { margin:0; font-size:13px; font-weight:700; letter-spacing:.5px; color: var(--text-secondary); text-transform:uppercase; }
+    .cat-metric { font-size:20px; font-weight:800; color: var(--text-primary); }
+    .cat-bar { height:6px; background: var(--bg-card); border-radius:4px; overflow:hidden; position:relative; }
+    .cat-bar span { display:block; height:100%; width:0; background: var(--gradient-primary); transition: width .6s ease; }
+    .cat-pct { font-size:11px; font-weight:600; color: var(--text-muted); letter-spacing:.5px; }
+    .cat-card.highlight { box-shadow:0 0 0 1px #8b5cf6, 0 0 0 4px rgba(139,92,246,.25); }
 
     .progress-bar {
       height: 48px;
@@ -238,6 +259,7 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       letter-spacing: 0.5px;
     }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
     .btn-filter {
       background: var(--bg-card);
@@ -297,6 +319,11 @@
       transition: all 0.3s;
     }
 
+    .month-header-inner { display:flex; align-items:center; gap:22px; }
+    .month-ring { --p:0; width:58px; height:58px; border-radius:50%; background: conic-gradient(#8b5cf6 calc(var(--p)*1%), rgba(255,255,255,.08) 0); position:relative; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; letter-spacing:.5px; }
+    .month-ring::after { content:""; position:absolute; inset:6px; background:rgba(0,0,0,.25); border-radius:50%; backdrop-filter: blur(2px); }
+    .month-ring span { position:relative; z-index:2; color:#fff; }
+
     .month-header:hover {
       filter: brightness(1.1);
     }
@@ -332,6 +359,10 @@
       border-left-color: #8b5cf6;
       padding-left: 32px;
     }
+    .week-header:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+    .week-progress { margin:0 24px 18px 24px; height:10px; background: var(--bg-tertiary); border:1px solid var(--border-color); border-radius:14px; position:relative; overflow:hidden; }
+    .week-progress span { position:absolute; left:0; top:0; bottom:0; width:0; background: var(--gradient-primary); display:block; transition: width .6s cubic-bezier(.4,0,.2,1); }
+    .week-progress::after { content:attr(data-label); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color: var(--text-secondary); mix-blend-mode: difference; pointer-events:none; }
 
     .week-desc {
       background: var(--bg-secondary);
@@ -415,6 +446,22 @@
       font-size: 0.98em;
     }
 
+    /* Цели и задачи (месяц/неделя/день) */
+    .month-objectives, .week-objectives { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px 18px; margin: 12px 0 20px; }
+    .month-objectives strong, .week-objectives strong { color: var(--text-primary); }
+    .month-objectives .mo-goal, .week-objectives .wg-goal { color: var(--text-secondary); font-size: 0.9em; line-height: 1.5; margin-bottom: 8px; }
+    .month-objectives ul, .week-objectives ul { list-style: disc; margin: 0 0 0 18px; padding: 0; color: var(--text-secondary); font-size: 0.85em; line-height: 1.4; }
+    .day-goal-line { color: var(--text-secondary); font-size: 0.85em; margin-top: 4px; }
+    .day-tasks-list { list-style: square; margin: 6px 0 4px 18px; padding: 0; color: var(--text-secondary); font-size: 0.8em; line-height: 1.4; }
+    .day-tasks-list li { margin: 2px 0; }
+
+    body[data-theme="dark"] .month-objectives ul,
+    body[data-theme="dark"] .week-objectives ul,
+    body[data-theme="dark"] .day-tasks-list,
+    body[data-theme="dark"] .month-objectives .mo-goal,
+    body[data-theme="dark"] .week-objectives .wg-goal,
+    body[data-theme="dark"] .day-goal-line { color: var(--text-secondary); }
+
     .day-resources {
       margin-top: 18px;
       padding-top: 18px;
@@ -444,9 +491,161 @@
       box-shadow: 0 8px 16px var(--glow);
     }
 
+    /* Дополнительные пользовательские элементы (заметки и вложения) */
+    .day-extra {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .note-block textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: border .25s, background .25s;
+    }
+    .note-block textarea:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px var(--glow); }
+    .attachments-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .attach-links, .attach-files { display: flex; flex-wrap: wrap; gap: 8px; }
+    .attach-links input[type="text"], .attach-links input[type="url"] {
+      flex: 1 1 180px;
+      min-width: 160px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    .attach-links button, .user-links button, .user-files button {
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: .3s;
+    }
+    .attach-links button:hover, .user-links button:hover, .user-files button:hover { filter: brightness(1.1); }
+    .user-links, .user-files { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+    .user-links li, .user-files li { display: flex; align-items: center; gap: 8px; background: var(--bg-secondary); padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px; }
+    .user-links li button.x-btn, .user-files li button.x-btn { margin-left:auto; }
+    .user-links a { color: #60a5fa; text-decoration: none; font-weight: 600; }
+    .user-files a { color: #34d399; text-decoration: none; font-weight: 600; }
+    /* Заметки (список) */
+    #content .note-block ul li { background: var(--bg-secondary); border:1px solid var(--border-color); padding:6px 10px; border-radius:8px; font-size:12px; display:flex; align-items:center; gap:8px; }
+    #content .note-block ul li .note-text { flex:1; color: var(--text-primary); }
+  /* Кнопка удаления (уменьшена) */
+  .del-btn { background: #ef4444 !important; font-size: 12px; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; box-shadow: 0 2px 6px rgba(239,68,68,.25); }
+  .del-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .file-size { color: var(--text-muted); font-size: 11px; margin-left: auto; }
+    .attach-hint { font-size: 11px; color: var(--text-muted); }
+    .inline-badge { background: rgba(139,92,246,.15); color: #a78bfa; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; letter-spacing: .5px; }
+  /* Кнопка материалов — улучшенный стиль */
+  .materials-toggle { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: linear-gradient(135deg, rgba(139,92,246,.35), rgba(167,139,250,.2)); color: #c4b5fd; padding: 6px 14px 6px 10px; border-radius: 18px; border: 1px solid rgba(167,139,250,.55); transition: background .35s, box-shadow .35s, border-color .35s; position: relative; }
+  .materials-toggle:hover { background: linear-gradient(135deg, rgba(139,92,246,.5), rgba(167,139,250,.32)); box-shadow: 0 4px 14px var(--glow); }
+  .materials-toggle.open { background: linear-gradient(135deg, rgba(139,92,246,.6), rgba(167,139,250,.45)); color: #fff; }
+  .materials-toggle span.arrow { transition: transform .35s cubic-bezier(.4,0,.2,1); display: inline-block; font-size: 13px; }
+  .materials-toggle.open span.arrow { transform: rotate(90deg); }
+  .materials-toggle .mat-badges { display: inline-flex; gap: 4px; margin-left: 4px; }
+  .mat-badge { background: rgba(0,0,0,.25); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; line-height: 1; font-weight: 600; letter-spacing: .5px; display: inline-flex; align-items: center; gap: 2px; }
+  .mat-badge.link { background: rgba(96,165,250,.35); color: #bfdbfe; }
+  .mat-badge.file { background: rgba(52,211,153,.35); color: #d1fae5; }
+  .mat-badge.note { background: rgba(251,191,36,.35); color: #fef3c7; }
+  .materials-toggle.open .mat-badge { filter: brightness(1.15); }
+  /* Анимация появления дополнительного блока */
+  .day-extra { animation: none; }
+  .day-extra.fade-in { animation: fadeSlide .35s ease; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .day-extra.collapsed { display: none; }
+  /* Внутренние раскрывающиеся секции (подзадачи, заметки, вложения) */
+  .section-toggle { width:100%; text-align:left; background: var(--bg-card); color: var(--text-secondary); padding:8px 12px; border:1px solid var(--border-color); border-radius:8px; font-size:12px; font-weight:600; letter-spacing:.5px; display:flex; align-items:center; gap:6px; cursor:pointer; transition:.25s; }
+  .section-toggle:hover { background: var(--bg-tertiary); }
+  .section-toggle.open { background: var(--bg-card); color: var(--text-secondary); }
+  .section-toggle .arrow { display:none; }
+  .section-toggle.open .arrow { display:none; }
+  .section-body { margin-top:8px; }
+  .section-body.collapsed { display:none; }
+  .st-progress { margin-left:auto; background:rgba(0,0,0,.25); padding:2px 6px; border-radius:6px; font-size:10px; font-weight:700; color:#fff; }
+  .section-toggle.open .st-progress { background:rgba(255,255,255,.25); }
+  /* Подзадачи внутри дня */
+  .day-subtasks { margin: 4px 0 10px; padding: 10px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; }
+  .day-subtasks h5 { margin: 0 0 8px; font-size: 12px; letter-spacing: .5px; font-weight: 700; color: var(--text-secondary); display:flex; align-items:center; gap:6px; }
+  .subtask-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .subtask-item { display:flex; align-items:center; gap:8px; font-size:12px; }
+  .subtask-item input[type="checkbox"] { cursor:pointer; accent-color:#8b5cf6; width:18px; height:18px; flex:0 0 auto; }
+  .subtask-box { flex:1; display:flex; align-items:center; gap:8px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:8px; padding:6px 10px; min-height:34px; transition:border-color .25s; }
+  .subtask-item.done .subtask-box { opacity:.65; text-decoration:line-through; }
+  .subtask-box:hover { border-color:#8b5cf6; }
+  .subtask-box button { background:none; border:none; color:var(--text-secondary); font-size:14px; padding:2px 6px; border-radius:4px; cursor:pointer; line-height:1; }
+  .subtask-box button { background:none; border:none; color:var(--text-secondary); font-size:14px; padding:2px 6px; border-radius:4px; cursor:pointer; line-height:1; }
+  .subtask-box button:hover { color:#ef4444; background:rgba(239,68,68,.08); }
+  [data-theme="dark"] .subtask-box button { color:var(--text-muted); }
+  [data-theme="dark"] .subtask-box button:hover { color:#f87171; }
+  .subtask-box span { flex:1; }
+  .subtask-box span { color: var(--text-primary); }
+  .subtask-item.done .subtask-box span { color: var(--text-muted); }
+  .subtask-box .sys-badge { font-size:9px; font-weight:600; letter-spacing:.5px; background:rgba(139,92,246,.25); color:#c4b5fd; padding:2px 5px; border-radius:6px; }
+  .x-btn { background:none !important; border:none !important; color:var(--text-secondary); font-size:14px; padding:2px 6px; cursor:pointer; line-height:1; border-radius:4px; }
+  .x-btn:hover { color:#ef4444; background:rgba(239,68,68,.08); }
+  [data-theme="dark"] .x-btn { color:var(--text-muted); }
+  [data-theme="dark"] .x-btn:hover { color:#f87171; }
+  .add-subtask { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .add-subtask input { flex: 1 1 160px; min-width: 140px; padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-size: 12px; }
+  .add-subtask button { background: var(--gradient-primary); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .add-subtask button:hover { filter: brightness(1.1); }
+  .add-subtask button:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+  /* Стилизация file input */
+  .file-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .file-wrapper input[type="file"] { display: none; }
+  .file-btn { background: var(--gradient-accent); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px var(--shadow-color); transition: .3s; }
+  .file-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+  .file-btn:active { transform: translateY(0); }
+  .attach-links button { width: 42px; justify-content: center; padding: 8px 0; }
+  .attach-hint { flex: 1 1 100%; }
+    @media (max-width: 600px){
+      .attach-links input[type="text"], .attach-links input[type="url"] { flex: 1 1 100%; }
+      .attach-links { flex-direction: column; }
+    }
+
     .collapsed {
       display: none;
     }
+
+    /* Плавающая панель быстрых действий */
+    .quick-panel { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 200; }
+    .qp-btn { background: var(--accent-gradient-faded); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.15); color: var(--text-primary); font-size:12px; font-weight:600; padding:10px 16px; border-radius: 18px; cursor:pointer; display:flex; align-items:center; gap:6px; transition: var(--transition); }
+    .qp-btn:hover { background: var(--gradient-primary); color:#fff; box-shadow:0 8px 24px var(--glow); }
+    .qp-btn:focus-visible { outline:none; box-shadow: var(--focus-ring); }
+    @media (max-width: 880px){ .quick-panel { right:12px; bottom:12px; } .qp-btn { padding:8px 12px; font-size:11px; } }
+  .qp-small { font-size:10px; background: var(--bg-secondary); opacity:.85; }
+  .storage-usage { background: var(--bg-tertiary); border:1px solid var(--border-color); padding:4px 8px; border-radius:10px; font-size:10px; font-weight:600; color: var(--text-secondary); display:flex; gap:6px; align-items:center; }
+  .storage-usage-bar { flex:1; height:6px; background: var(--bg-card); border-radius:4px; overflow:hidden; position:relative; }
+  .storage-usage-bar span { position:absolute; inset:0; width:0; background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6); transition: width .6s ease; }
+
+    /* Плавное раскрытие внутренних секций */
+    .section-body { overflow: hidden; transition: max-height .45s ease; }
+    .section-body.collapsed { max-height: 0 !important; padding-top:0 !important; }
+    .section-body:not(.collapsed) { max-height: 800px; }
 
     @media (max-width: 768px) {
       .stats {
@@ -508,7 +707,28 @@
       <button class="btn-reset" onclick="reset()">Сбросить прогресс</button>
     </div>
 
+    <div style="padding:0 32px 8px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+      <div class="storage-usage" id="storageUsage">
+        <span>Хранилище</span>
+        <div class="storage-usage-bar"><span id="storageUsageBar"></span></div>
+        <strong id="storageUsagePct">0%</strong>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="qp-btn qp-small" type="button" onclick="exportData()">⬇️ Экспорт</button>
+        <button class="qp-btn qp-small" type="button" onclick="document.getElementById('importInput').click()">⬆️ Импорт</button>
+        <input type="file" id="importInput" accept="application/json" style="display:none" onchange="handleImport(this)">
+      </div>
+    </div>
+
+    <div class="categories-summary" id="categoriesSummary"></div>
+
     <div class="content" id="content"></div>
+  </div>
+  <div class="quick-panel" aria-label="Быстрые действия">
+    <button class="qp-btn" type="button" onclick="scrollToNextIncomplete()">➡️ Следующий</button>
+    <button class="qp-btn" type="button" onclick="expandAll()">🔓 Открыть все</button>
+    <button class="qp-btn" type="button" onclick="collapseAll()">🔒 Свернуть все</button>
+    <button class="qp-btn" type="button" onclick="resetFilter()">🎯 Сброс фильтра</button>
   </div>
 
   <script>
@@ -873,6 +1093,37 @@
       }
     ];
 
+    // --- Мета: цели месяцев (goal) ---
+    const monthMeta = {
+      1: { goal: 'Сформировать фундамент: понять устройство интернета, освоить базовый и продвинутый HTML/CSS и рабочие инструменты.' },
+      2: { goal: 'Освоить основы JavaScript, работу с DOM, асинхронность и базовую сборку.' },
+      3: { goal: 'Погрузиться в React и современные подходы к стилизации и архитектуре.' },
+      4: { goal: 'Добавить типизацию (TypeScript), GraphQL, Next.js и понять основы безопасности.' },
+      5: { goal: 'Внедрить культуру качества: тестирование (юнит/E2E), производительность и доступность.' },
+      6: { goal: 'Научиться визуализации, статической генерации, CI/CD и продвинутым паттернам.' },
+      7: { goal: 'Систематизировать знания и реализовать итоговый проект.' },
+      8: { goal: 'Финализация, презентация результата и планирование дальнейшего развития.' }
+    };
+
+    // --- Генерация задач (списков) на лету ---
+    function buildMonthTasks(month){
+      return month.weeks.map(w => w.title.replace(/^[^—]*—\s*/,'').trim());
+    }
+    function buildWeekTasks(week){
+      return week.days.map(d => `День ${d.day}: ${d.title}`);
+    }
+    function buildDayTasks(day){
+      // Разбиваем описание на подзадачи по запятым/точкам/точкам с запятой
+      const raw = (day.task||'').split(/[\.;,]/).map(s=>s.trim()).filter(s=>s.length>3);
+      // Если в результате пусто – используем целиком task как одну задачу
+      return raw.length ? raw : (day.task? [day.task] : []);
+    }
+    function buildDayGoal(day){
+      // Проектные дни отмечаем явно
+      if(/Проект/i.test(day.title)) return 'Применить и закрепить навыки: ' + day.title.replace(/Проект:?\s*/i,'').trim();
+      return 'Освоить тему: ' + day.title;
+    }
+
     // --- Подробные описания недель ---
     const weekDescriptions = {
       1: "Фундаментальные основы работы интернета, протокола HTTP, доменных имён и базовая публикация. Цель — понимать цепочку: пользователь → DNS → запрос → ответ браузера.",
@@ -938,6 +1189,261 @@
 
     // удалено дублирующее объявление state, теперь оно только в начале скрипта
     let currentFilter = 'all';
+
+  // --- Состояние развёрнутых "Материалы" по дням ---
+  let extraOpen = {};
+  try { extraOpen = JSON.parse(localStorage.getItem('frontendExtraOpen')||'{}')||{}; } catch(e){ extraOpen = {}; }
+  function saveExtraOpen(){ localStorage.setItem('frontendExtraOpen', JSON.stringify(extraOpen)); }
+  function toggleExtra(day){
+    extraOpen[day] = !extraOpen[day];
+    saveExtraOpen();
+    const wrap = document.getElementById('extra'+day);
+    const btn = document.getElementById('mtgl'+day);
+    if(wrap && btn){
+      if(extraOpen[day]){ wrap.classList.remove('collapsed'); void wrap.offsetWidth; wrap.classList.add('fade-in'); btn.classList.add('open'); }
+      else { wrap.classList.add('collapsed'); wrap.classList.remove('fade-in'); btn.classList.remove('open'); }
+      updateMaterialBadge(day);
+    }
+  }
+
+    // --- Пользовательские заметки и вложения ---
+  let notesState = {};
+  let attachmentsState = {}; // { day: { links: [{title,url}], files:[{name,data,size}] } }
+  let subtasksState = {}; // { day: [{text, done}] }
+  // Состояние внутренних секций (subtasks/notes/attachments)
+  let sectionOpen = {}; // { day: { subtasks:true, notes:true, attachments:true } }
+    try { notesState = JSON.parse(localStorage.getItem('frontendNotes')||'{}')||{}; } catch(e){ notesState = {}; }
+  try { attachmentsState = JSON.parse(localStorage.getItem('frontendAttachments')||'{}')||{}; } catch(e){ attachmentsState = {}; }
+  try { subtasksState = JSON.parse(localStorage.getItem('frontendSubtasks')||'{}')||{}; } catch(e){ subtasksState = {}; }
+  try { sectionOpen = JSON.parse(localStorage.getItem('frontendSectionOpen')||'{}')||{}; } catch(e){ sectionOpen = {}; }
+
+  function saveSectionOpen(){ localStorage.setItem('frontendSectionOpen', JSON.stringify(sectionOpen)); }
+  function ensureSectionDefaults(day){
+    if(!sectionOpen[day]){ sectionOpen[day] = { subtasks:true, notes:true, attachments:true }; }
+  }
+  function toggleSection(day, sec){
+    ensureSectionDefaults(day);
+    sectionOpen[day][sec] = !sectionOpen[day][sec];
+    saveSectionOpen();
+    applySectionState(day, sec);
+  }
+  function applySectionState(day, sec){
+    const btn = document.getElementById(sec+'Toggle'+day);
+    const body = document.getElementById(sec+'Body'+day);
+    if(!btn || !body) return;
+    const open = sectionOpen[day]?.[sec];
+    if(open){ btn.classList.add('open'); body.classList.remove('collapsed'); }
+    else { btn.classList.remove('open'); body.classList.add('collapsed'); }
+  }
+
+    function saveNotes(){ localStorage.setItem('frontendNotes', JSON.stringify(notesState)); }
+  function saveAttachments(){ localStorage.setItem('frontendAttachments', JSON.stringify(attachmentsState)); }
+  function saveSubtasks(){ localStorage.setItem('frontendSubtasks', JSON.stringify(subtasksState)); }
+    // Миграция: если значение было строкой — оборачиваем в массив заметок
+    function migrateNotes(){
+      Object.keys(notesState).forEach(k => {
+        if(typeof notesState[k] === 'string'){
+          const trimmed = notesState[k].trim();
+          notesState[k] = trimmed ? [{ text: trimmed, ts: Date.now() }] : [];
+        }
+      });
+      saveNotes();
+    }
+    migrateNotes();
+    function addNote(day, text){
+      const val = (text||'').trim(); if(!val) return;
+      if(!Array.isArray(notesState[day])) notesState[day] = [];
+      notesState[day].push({ text: escapeHTML(val), ts: Date.now() });
+      saveNotes();
+      renderNotes(day);
+      updateMaterialBadge(day);
+    }
+    function deleteNote(day, idx){ if(!Array.isArray(notesState[day])) return; notesState[day].splice(idx,1); saveNotes(); renderNotes(day); updateMaterialBadge(day); }
+    function renderNotes(day){
+      const listEl = document.getElementById('notesList'+day); if(!listEl) return;
+      const arr = Array.isArray(notesState[day]) ? notesState[day] : [];
+      if(!arr.length){ listEl.innerHTML = '<li style="opacity:.5;font-size:11px;">(нет заметок)</li>'; return; }
+      listEl.innerHTML = arr.map((n,i)=>`<li><span class="inline-badge">NOTE</span><span class="note-text">${n.text}</span><button class="x-btn" title="Удалить" onclick="deleteNote(${day},${i})">✕</button></li>`).join('');
+    }
+    function addLink(day){
+      const t = document.getElementById('linkTitle'+day);
+      const u = document.getElementById('linkUrl'+day);
+      const title = (t.value||'Ссылка').trim();
+      const url = (u.value||'').trim();
+      if(!/^https?:\/\//i.test(url)){ alert('Укажите корректный URL (http/https).'); return; }
+      if(!attachmentsState[day]) attachmentsState[day] = { links: [], files: [] };
+      attachmentsState[day].links.push({ title: escapeHTML(title), url: url });
+      saveAttachments();
+      t.value=''; u.value='';
+      // перерисуем только список
+      renderUserLinks(day);
+      updateMaterialBadge(day);
+    }
+    function deleteLink(day, idx){ if(!attachmentsState[day]) return; attachmentsState[day].links.splice(idx,1); saveAttachments(); renderUserLinks(day); updateMaterialBadge(day); }
+    function handleFileUpload(day, input){
+      const files = Array.from(input.files||[]);
+      if(!files.length) return;
+      if(!attachmentsState[day]) attachmentsState[day] = { links: [], files: [] };
+      const MAX_SIZE = 200 * 1024; // 200KB per file
+      let warn = [];
+      let readCount = 0;
+      files.forEach(file => {
+        if(file.size > MAX_SIZE){ warn.push(file.name); return; }
+        const reader = new FileReader();
+        reader.onload = e => {
+          attachmentsState[day].files.push({ name: escapeHTML(file.name), data: e.target.result, size: file.size });
+          readCount++;
+          if(readCount === files.filter(f=>f.size<=MAX_SIZE).length){ saveAttachments(); renderUserFiles(day); updateMaterialBadge(day); }
+        };
+        reader.readAsDataURL(file);
+      });
+      if(warn.length) alert('Некоторые файлы превышают лимит 200KB и не были добавлены: '+warn.join(', '));
+      input.value='';
+    }
+    function deleteFile(day, idx){ if(!attachmentsState[day]) return; attachmentsState[day].files.splice(idx,1); saveAttachments(); renderUserFiles(day); updateMaterialBadge(day); }
+    function bytesToKB(b){ return (b/1024).toFixed(1)+' KB'; }
+    function escapeHTML(str){ return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]||c)); }
+    function renderUserLinks(day){
+      const ul = document.querySelector(`#userLinks${day}`); if(!ul) return;
+      const list = (attachmentsState[day]?.links)||[];
+  ul.innerHTML = list.map((l,i)=>`<li><span class="inline-badge">LINK</span><a href="${l.url}" target="_blank">${l.title}</a><button class="x-btn" onclick="deleteLink(${day},${i})" title="Удалить">✕</button></li>`).join('');
+    }
+    function renderUserFiles(day){
+      const ul = document.querySelector(`#userFiles${day}`); if(!ul) return;
+      const list = (attachmentsState[day]?.files)||[];
+  ul.innerHTML = list.map((f,i)=>`<li><span class="inline-badge">FILE</span><a download="${f.name}" href="${f.data}">${f.name}</a><span class="file-size">${bytesToKB(f.size)}</span><button class="x-btn" onclick="deleteFile(${day},${i})" title="Удалить">✕</button></li>`).join('');
+    }
+    // --- Подзадачи дней ---
+    function generateTemplateSubtasks(dayObj){
+      const title = (dayObj.title||'').toLowerCase();
+      const task = (dayObj.task||'').toLowerCase();
+      const rawPieces = (dayObj.task||'')
+        .split(/[.;]+/)
+        .map(s=>s.trim())
+        .filter(s=>s.length>4);
+      const subtasks = [];
+      const push = t => { if(t && !subtasks.includes(t)) subtasks.push(t); };
+
+      // Общие базовые шаги
+      push('Прочитать теорию/документацию по теме');
+      push('Сделать краткий конспект (5–7 пунктов)');
+
+      // Категории
+      if(/internet|dns|браузер|http/.test(task+title)){
+        push('Нарисовать схему: клиент → DNS → сервер → ответ');
+        push('Открыть DevTools → Network и проанализировать 3 запроса');
+      }
+      if(/git|ветк|branch|pull|merge/.test(task+title)){
+        push('Создать тестовую ветку и выполнить merge через PR');
+        push('Разрешить (симулировать) конфликт слияния');
+      }
+      if(/форм|form/.test(task+title)){
+        push('Сверстать форму с валидацией HTML-атрибутами');
+        push('Проверить фокус и доступность (Tab-навигация)');
+      }
+      if(/flex|grid/.test(task+title)){
+        push('Перестроить макет под мобильный (<600px)');
+        push('Проверить выравнивание элементов в разных браузерах');
+      }
+      if(/sass|scss/.test(task+title)){
+        push('Вынести цвета и размеры в переменные');
+        push('Разбить стили на partials и импортировать их');
+      }
+      if(/javascript|переменн|функц|массив|объект|json/.test(task+title)){
+        push('Написать минимум 3 мини-примера в консоли');
+        push('Объяснить вслух что делает каждый пример');
+      }
+      if(/promise|async|await|fetch/.test(task+title)){
+        push('Сделать запрос fetch и обработать ошибки');
+        push('Переписать пример на async/await');
+      }
+      if(/react|jsx|hook|context|state/.test(task+title)){
+        push('Создать маленький компонент (50-70 строк) для практики');
+        push('Добавить минимум 1 проверку состояния/условный рендер');
+      }
+      if(/typescript|ts/.test(task+title)){
+        push('Заменить any на конкретный тип');
+        push('Добавить интерфейс или type для структуры данных');
+      }
+      if(/test|jest|cypress|rtl/.test(task+title)){
+        push('Написать 1 позитивный и 1 негативный тест');
+        push('Посмотреть падающий тест и починить причину');
+      }
+      if(/performance|оптимизац|lighthouse|pwa/.test(task+title)){
+        push('Сделать замер Lighthouse до изменений');
+        push('Применить оптимизацию и сравнить метрики');
+      }
+      if(/git hub actions|ci|cd|docker/.test(task+title)){
+        push('Настроить простой workflow build+test');
+        push('Добавить бейдж статуса в README');
+      }
+      if(/проект|spa|блог|магазин|реал-?time|чат|final|итог/i.test(task+title)){
+        push('Сформулировать 3 ближайших шага по проекту');
+        push('Сделать коммит с осмысленным сообщением');
+      }
+
+      // Из исходного task вытаскиваем глаголы и формируем задания «Сделать ...»
+      rawPieces.forEach(p=>{
+        const low = p.toLowerCase();
+        if(/проанализир|разбор|посмотреть/.test(low)) push('Проанализировать пример из документации');
+        if(/созда|сдела|реализ|оптимиз|добав|перенес|перепис/.test(low)) push('Реализовать мини-версию на практике');
+      });
+
+      // Финальные обязательные шаги
+      push('Подвести итоги: 2-3 вывода в заметках');
+
+      return subtasks.slice(0,8);
+    }
+    function ensureSubtasks(dayObj){
+      const generated = generateTemplateSubtasks(dayObj);
+      if(!subtasksState[dayObj.day]){
+        subtasksState[dayObj.day] = generated.map(t=>({text:t, done:false, system:true}));
+        if(generated.length) saveSubtasks();
+        return;
+      }
+      let changed = false;
+      // Миграция: добавить system где отсутствует
+      subtasksState[dayObj.day] = subtasksState[dayObj.day].map(item => {
+        if(item.system === undefined){
+          const isSystem = generated.some(g => g === item.text);
+            if(isSystem){ item.system = true; changed = true; }
+            else { item.system = false; changed = true; }
+        }
+        return item;
+      });
+      // Добавить отсутствующие системные
+      generated.forEach(t => {
+        if(!subtasksState[dayObj.day].some(it => it.text === t)){
+          subtasksState[dayObj.day].push({ text: t, done:false, system:true });
+          changed = true;
+        }
+      });
+      if(changed) saveSubtasks();
+    }
+    function renderSubtasks(day){
+      const wrap = document.getElementById('subtasks'+day); if(!wrap) return;
+      const list = subtasksState[day]||[];
+  const ul = wrap.querySelector('.subtask-list'); if(!ul) return;
+  ul.innerHTML = list.map((s,i)=>`<li class="subtask-item ${s.done?'done':''}"><input type="checkbox" ${s.done?'checked':''} onchange="toggleSubtask(${day},${i})"><div class="subtask-box"><span>${s.text}</span>${s.system?'<span class="sys-badge" title="Системная подзадача">SYS</span>':`<button aria-label="Удалить" title="Удалить подзадачу" onclick="deleteSubtask(${day},${i})">✕</button>`}</div></li>`).join('');
+  updateSubtaskProgress(day);
+    }
+    function toggleSubtask(day, idx){ const arr = subtasksState[day]; if(!arr) return; arr[idx].done = !arr[idx].done; saveSubtasks(); renderSubtasks(day); }
+    function addSubtask(day){ const input = document.getElementById('newSubtask'+day); if(!input) return; const val = input.value.trim(); if(!val) return; if(!subtasksState[day]) subtasksState[day]=[]; subtasksState[day].push({text:val, done:false}); saveSubtasks(); input.value=''; renderSubtasks(day); }
+  function deleteSubtask(day, idx){ if(!subtasksState[day]) return; if(subtasksState[day][idx]?.system) return; subtasksState[day].splice(idx,1); saveSubtasks(); renderSubtasks(day); }
+  function updateSubtaskProgress(day){ const btn = document.getElementById('subtasksToggle'+day); const prog = document.getElementById('subtasksProg'+day); if(!btn || !prog) return; const list = subtasksState[day]||[]; const total = list.length; const done = list.filter(s=>s.done).length; prog.textContent = `${done}/${total}`; }
+    // Обновление бейджей материалов на кнопке
+    function updateMaterialBadge(day){
+      const btn = document.getElementById('mtgl'+day); if(!btn) return;
+      const linksCount = (attachmentsState[day]?.links?.length)||0;
+      const filesCount = (attachmentsState[day]?.files?.length)||0;
+      const noteActive = Array.isArray(notesState[day]) ? notesState[day].length>0 : (typeof notesState[day]==='string' && notesState[day].trim().length>0);
+      const isOpen = !!extraOpen[day];
+      btn.innerHTML = `<span class="arrow">▶</span>${isOpen? ' Скрыть материалы':' Материалы'}<span class="mat-badges">`
+        + (linksCount? `<span class=\"mat-badge link\" title=\"Пользовательских ссылок\">🔗 ${linksCount}</span>`:'')
+        + (filesCount? `<span class=\"mat-badge file\" title=\"Загруженных файлов\">📁 ${filesCount}</span>`:'')
+        + (noteActive? `<span class=\"mat-badge note\" title=\"Заметок\">📝 ${Array.isArray(notesState[day])? notesState[day].length:1}</span>`:'')
+        + `</span>`;
+    }
 
     // Инициализация темы
     function initTheme() {
@@ -1017,9 +1523,124 @@
       return base;
     }
 
+    // --- Категоризация дней для сводки ---
+    function categorizeDay(day){
+      const txt = (day.title + ' ' + day.task).toLowerCase();
+      if(/internet|dns|http|браузер/.test(txt)) return 'Сеть';
+      if(/html|семантик|форма|валид/i.test(txt)) return 'HTML';
+      if(/css|flex|grid|sass|scss|tailwind|bootstrap/.test(txt)) return 'CSS';
+      if(/javascript|переменн|функц|массив|объект|json|async|promise|fetch/.test(txt)) return 'JS';
+      if(/react|jsx|hook|context|router|next\.js|nextjs/.test(txt)) return 'React/Next';
+      if(/typescript|ts/.test(txt)) return 'TypeScript';
+      if(/graphql/.test(txt)) return 'GraphQL';
+      if(/test|jest|cypress|rtl/.test(txt)) return 'Тесты';
+      if(/docker|ci|github actions|workflow/.test(txt)) return 'CI/CD';
+      if(/performance|lighthouse|pwa|a11y|accessibility/.test(txt)) return 'Perf/A11y';
+      if(/проект|spa|блог|магазин|final|итог|project/.test(txt)) return 'Проект';
+      return 'Прочее';
+    }
+
+    function collectCategoryStats(){
+      const stats = {};
+      plan.forEach(m => m.weeks.forEach(w => w.days.forEach(d => {
+        const cat = categorizeDay(d);
+        if(!stats[cat]) stats[cat] = { total:0, done:0 };
+        stats[cat].total++;
+        if(state[d.day]) stats[cat].done++;
+      })));
+      return stats;
+    }
+
+    function renderCategorySummary(){
+      const holder = document.getElementById('categoriesSummary'); if(!holder) return;
+      const stats = collectCategoryStats();
+      const entries = Object.entries(stats).sort((a,b)=>a[0].localeCompare(b[0],'ru'));
+      holder.innerHTML = entries.map(([cat,data])=>{
+        const pct = data.total? Math.round(data.done/data.total*100):0;
+        return `<div class="cat-card${pct===100?' highlight':''}"><h4>${cat}</h4><div class="cat-metric">${data.done}/${data.total}</div><div class="cat-bar"><span style="width:${pct}%"></span></div><div class="cat-pct">${pct}%</div></div>`;
+      }).join('');
+    }
+
+    // --- Weekly progress bars ---
+    function injectWeekProgress(){
+      document.querySelectorAll('.week').forEach(weekEl => {
+        const header = weekEl.querySelector('.week-header');
+        if(!header) return;
+        const daysBlock = weekEl.querySelector('.days');
+        const spans = header.querySelectorAll('span');
+        const progressText = spans[spans.length-1]?.textContent||''; // x/y
+        const match = progressText.match(/(\d+)\/(\d+)/);
+        if(!match) return;
+        const done = +match[1]; const total = +match[2];
+        const pct = total? Math.round(done/total*100):0;
+        let bar = weekEl.querySelector('.week-progress');
+        if(!bar){
+          bar = document.createElement('div');
+          bar.className='week-progress';
+          bar.dataset.label = pct + '%';
+          const fill = document.createElement('span');
+          bar.appendChild(fill);
+          daysBlock.parentNode.insertBefore(bar, daysBlock);
+          requestAnimationFrame(()=>{ fill.style.width = pct+'%'; });
+        } else {
+          bar.dataset.label = pct + '%';
+          const fill = bar.querySelector('span');
+          fill.style.width = pct+'%';
+        }
+      });
+    }
+
+    // --- Экспорт / импорт ---
+    function exportData(){
+      const payload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        state, notesState, attachmentsState, subtasksState, extraOpen, openState, sectionOpen, theme: document.body.getAttribute('data-theme')
+      };
+      const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'frontend-tracker-backup.json';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+    function handleImport(input){
+      const file = input.files[0]; if(!file) return; const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if(!data || typeof data !== 'object') throw new Error('Некорректный формат');
+          if(data.state) state = data.state;
+          if(data.notesState) notesState = data.notesState;
+          if(data.attachmentsState) attachmentsState = data.attachmentsState;
+            if(data.subtasksState) subtasksState = data.subtasksState;
+          if(data.extraOpen) extraOpen = data.extraOpen;
+          if(data.openState) openState = data.openState;
+          if(data.sectionOpen) sectionOpen = data.sectionOpen;
+          if(data.theme) { document.body.setAttribute('data-theme', data.theme); localStorage.setItem('theme', data.theme); }
+          save(); saveNotes(); saveAttachments(); saveSubtasks(); saveExtraOpen(); saveOpenState(); saveSectionOpen();
+          updateStats(); render();
+          alert('Импорт завершён успешно');
+        } catch(err){ alert('Ошибка импорта: '+err.message); }
+        input.value='';
+      };
+      reader.readAsText(file);
+    }
+
+    // --- Оценка использования localStorage ---
+    function estimateStorageUsage(){
+      let total = 0; for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); const v = localStorage.getItem(k); total += (k.length + v.length); }
+      // localStorage обычно ~5MB per origin. Возьмём 5*1024*1024 ≈ 5242880 bytes.
+      const limit = 5 * 1024 * 1024;
+      const pct = Math.min(100, Math.round(total / limit * 100));
+      const bar = document.getElementById('storageUsageBar'); const pctEl = document.getElementById('storageUsagePct');
+      if(bar){ bar.style.width = pct + '%'; }
+      if(pctEl){ pctEl.textContent = pct + '%'; pctEl.style.color = pct>80? '#f87171' : pct>60? '#fbbf24' : 'var(--text-secondary)'; }
+    }
+
     function render() {
       const html = plan.map(month => {
         const monthProgress = `${month.weeks.reduce((s, w) => s + w.days.filter(d => state[d.day]).length, 0)}/${month.weeks.reduce((s, w) => s + w.days.length, 0)}`;
+        const monthTasks = buildMonthTasks(month);
         return `
         <div class="month">
           <div class="month-header" onclick="toggleMonth(${month.month})">
@@ -1027,18 +1648,28 @@
             <span>${monthProgress}</span>
           </div>
           <div id="month${month.month}" class="${openState.months.includes(month.month) ? '' : 'collapsed'}">
+            <div class="month-objectives">
+              <div class="mo-goal"><strong>Цель месяца:</strong> ${monthMeta[month.month]?.goal||''}</div>
+              <ul class="mo-tasks">${monthTasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+            </div>
             ${month.weeks.map(week => {
           const weekProgress = `${week.days.filter(d => state[d.day]).length}/${week.days.length}`;
+          const weekTasks = buildWeekTasks(week);
           return `
               <div class="week">
                 <div class="week-header" onclick="toggleWeek(${week.week})">
                   <span>${week.title}</span>
                   <span>${weekProgress}</span>
                 </div>
-                ${weekDescriptions[week.week] ? `<div class=\"week-desc\">${weekDescriptions[week.week]}</div>` : ''}
+                <div class="week-objectives">
+                  <div class="wg-goal"><strong>Цель недели:</strong> ${weekDescriptions[week.week]||''}</div>
+                  <ul class="wg-tasks">${weekTasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+                </div>
                 <div id="week${week.week}" class="days ${openState.weeks.includes(week.week) ? '' : 'collapsed'}">
                   ${week.days.map(day => {
             const effectiveLinks = buildExtraLinks(day);
+            const dayGoal = buildDayGoal(day);
+            const dayTasks = buildDayTasks(day);
             return `
                     <div class="day ${state[day.day] ? 'done' : ''}" data-day="${day.day}">
                       <div class="day-header">
@@ -1048,6 +1679,8 @@
                             День ${day.day}: ${day.title}
                             <span class="day-time">${day.time}</span>
                           </div>
+                          <div class="day-goal-line"><strong>Цель:</strong> ${dayGoal}</div>
+                          ${dayTasks.length ? `<ul class="day-tasks-list">${dayTasks.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
                           <div class="day-task">${day.task}</div>
                           ${effectiveLinks.length ? `
                             <div class="day-resources">
@@ -1057,6 +1690,45 @@
             }).join('')}
                             </div>
                           ` : ''}
+                          <div class="day-extra" id="extra${day.day}">
+                            <div class="day-subtasks" id="subtasks${day.day}">
+                              <button type="button" id="subtasksToggle${day.day}" class="section-toggle" onclick="toggleSection(${day.day},'subtasks')">Подзадачи <span class="st-progress" id="subtasksProg${day.day}"></span></button>
+                              <div class="section-body" id="subtasksBody${day.day}">
+                                <ul class="subtask-list"></ul>
+                                <div class="add-subtask">
+                                  <input id="newSubtask${day.day}" placeholder="Новая подзадача...">
+                                  <button type="button" onclick="addSubtask(${day.day})">Добавить</button>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="note-block" id="note${day.day}">
+                              <button type="button" id="notesToggle${day.day}" class="section-toggle" onclick="toggleSection(${day.day},'notes')">Заметки</button>
+                              <div class="section-body" id="notesBody${day.day}">
+                                <input type="text" id="noteInput${day.day}" placeholder="Добавить заметку и Enter" style="width:100%;padding:8px 10px;border:1px solid var(--border-color);border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);font-size:12px;" onkeydown="if(event.key==='Enter'){addNote(${day.day}, this.value); this.value=''; event.preventDefault();}">
+                                <ul id="notesList${day.day}" style="list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;"></ul>
+                              </div>
+                            </div>
+                            <div class="attachments-block" id="attachments${day.day}">
+                              <button type="button" id="attachmentsToggle${day.day}" class="section-toggle" onclick="toggleSection(${day.day},'attachments')">Файлы и ссылки</button>
+                              <div class="section-body" id="attachmentsBody${day.day}">
+                                <div class="attach-links">
+                                  <input type="text" id="linkTitle${day.day}" placeholder="Название">
+                                  <input type="url" id="linkUrl${day.day}" placeholder="https://ссылка...">
+                                  <button type="button" onclick="addLink(${day.day})">+</button>
+                                </div>
+                                <ul class="user-links" id="userLinks${day.day}"></ul>
+                                <div class="attach-files file-wrapper">
+                                  <label class="file-btn" for="fileInput${day.day}">📁 Выбрать файлы</label>
+                                  <input id="fileInput${day.day}" type="file" multiple onchange="handleFileUpload(${day.day}, this)" title="До 200KB на файл">
+                                  <span class="attach-hint">Лимит 200KB/файл (хранится в localStorage).</span>
+                                </div>
+                                <ul class="user-files" id="userFiles${day.day}"></ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="materialsToggle${day.day}">
+                            <button id="mtgl${day.day}" class="materials-toggle ${extraOpen[day.day] ? 'open':''}" type="button" onclick="toggleExtra(${day.day})"><span class="arrow">▶</span>${extraOpen[day.day] ? ' Скрыть материалы' : ' Материалы'}<span class="mat-badges"></span></button>
+                          </div>
                         </div>
                       </div>
                     </div>`;
@@ -1070,6 +1742,46 @@
 
       document.getElementById('content').innerHTML = html;
       applyFilter();
+      // После рендера восстановим пользовательские ссылки/файлы и состояния материалов
+  Object.keys(attachmentsState).forEach(day => { renderUserLinks(day); renderUserFiles(day); });
+  // Инициализация и рендер подзадач (генерируются один раз)
+  plan.forEach(m => m.weeks.forEach(w => w.days.forEach(d => { ensureSubtasks(d); renderSubtasks(d.day); })));
+  // Обновим бейджи материалов после восстановления списков
+  plan.forEach(m => m.weeks.forEach(w => w.days.forEach(d => updateMaterialBadge(d.day))));
+      // Скрываем/показываем материалы по сохранённому состоянию
+      plan.forEach(m => m.weeks.forEach(w => w.days.forEach(d => {
+        const container = document.getElementById('extra'+d.day);
+        if(container){ if(!extraOpen[d.day]) container.classList.add('collapsed'); }
+        // Применим состояние внутренних секций
+        ensureSectionDefaults(d.day);
+        ['subtasks','notes','attachments'].forEach(sec => applySectionState(d.day, sec));
+        renderNotes(d.day);
+      })));
+      // Кольца прогресса месяцев (встраиваем после генерации DOM)
+      document.querySelectorAll('.month').forEach(monthEl => {
+        const header = monthEl.querySelector('.month-header');
+        if(!header) return;
+        const textSpan = header.querySelector('span:last-child');
+        if(!textSpan) return;
+        const match = textSpan.textContent.match(/(\d+)\/(\d+)/);
+        if(!match) return;
+        const done = +match[1]; const total = +match[2];
+        const pct = total ? Math.round(done/total*100) : 0;
+        if(!header.querySelector('.month-ring')){
+          const ring = document.createElement('div');
+          ring.className='month-ring';
+          ring.style.setProperty('--p', pct);
+          ring.innerHTML = '<span>'+pct+'%</span>';
+          header.insertBefore(ring, header.firstChild);
+        } else {
+          const ring = header.querySelector('.month-ring');
+          ring.style.setProperty('--p', pct);
+          ring.innerHTML = '<span>'+pct+'%</span>';
+        }
+      });
+      injectWeekProgress();
+      renderCategorySummary();
+      estimateStorageUsage();
     }
 
     function toggleMonth(m) {
@@ -1110,6 +1822,17 @@
       event.target.classList.add('active');
       applyFilter();
     }
+
+    function resetFilter(){ currentFilter='all'; document.querySelectorAll('.btn-filter').forEach(b=>b.classList.remove('active')); document.querySelector('.btn-filter[onclick="filter('+'\'all\''+')"]')?.classList.add('active'); applyFilter(); }
+
+    function scrollToNextIncomplete(){
+      const visibleDays = Array.from(document.querySelectorAll('.day')).filter(d=>d.style.display !== 'none');
+      const next = visibleDays.find(d => !state[d.dataset.day]);
+      if(next){ next.scrollIntoView({behavior:'smooth', block:'center'}); next.classList.add('highlight-temp'); setTimeout(()=>next.classList.remove('highlight-temp'),1500); }
+      else { alert('Все видимые дни завершены 🎉'); }
+    }
+    function expandAll(){ openState.months = plan.map(m=>m.month); openState.weeks = plan.flatMap(m=>m.weeks.map(w=>w.week)); saveOpenState(); render(); }
+    function collapseAll(){ openState.months = []; openState.weeks = []; saveOpenState(); render(); }
 
     function applyFilter() {
       document.querySelectorAll('.day').forEach(day => {
